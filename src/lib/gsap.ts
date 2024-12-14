@@ -10,27 +10,27 @@ import TextPlugin from 'gsap/TextPlugin';
 
 // Register all plugins
 gsap.registerPlugin(
-    CustomEase,
-    ExpoScaleEase,
-    SlowMo,
-    Flip,
-    ScrollTrigger,
-    Observer,
-    ScrollToPlugin,
-    Draggable,
-    TextPlugin
+  CustomEase,
+  ExpoScaleEase,
+  SlowMo,
+  Flip,
+  ScrollTrigger,
+  Observer,
+  ScrollToPlugin,
+  Draggable,
+  TextPlugin
 );
 
 // Export everything
 export {
-    gsap,
-    CustomEase,
-    ExpoScaleEase,
-    SlowMo,
-    Flip,
-    ScrollTrigger,
-    Observer,
-    ScrollToPlugin,
-    Draggable,
-    TextPlugin
+  gsap,
+  CustomEase,
+  ExpoScaleEase,
+  SlowMo,
+  Flip,
+  ScrollTrigger,
+  Observer,
+  ScrollToPlugin,
+  Draggable,
+  TextPlugin,
 };

@@ -13,14 +13,19 @@ const LandingPage: FC = () => {
     const updateTimeDisplays = () => {
       if (!timeDisplaysRef.current) return;
       const now = new Date();
-      const timeElements = timeDisplaysRef.current.querySelectorAll<HTMLElement>('.time-value');
+      const timeElements =
+        timeDisplaysRef.current.querySelectorAll<HTMLElement>('.time-value');
 
       timeElements.forEach((el) => {
         const timezone = el.getAttribute('data-timezone');
         if (!timezone) return;
         const time = new Date(
           now.toLocaleString('en-US', { timeZone: timezone })
-        ).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+        ).toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
         el.textContent = time;
       });
     };
@@ -37,17 +42,21 @@ const LandingPage: FC = () => {
     const ctx = gsap.context(() => {
       gsap.set('.time-display', {
         opacity: 0,
-        x: 20
+        x: 20,
       });
 
       const mainTL = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-      mainTL.to('.time-display', {
-        opacity: 1,
-        x: 0,
-        duration: 0.6,
-        stagger: 0.1
-      }, 1);
+      mainTL.to(
+        '.time-display',
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          stagger: 0.1,
+        },
+        1
+      );
     }, containerRef);
 
     return () => ctx.revert();
@@ -67,10 +76,10 @@ const LandingPage: FC = () => {
       <div className="relative w-full max-w-[1400px] px-4 mx-auto flex flex-col items-center justify-center min-h-screen">
         {/* Logo Section */}
         <AnimatedLogo />
-        
+
         {/* Time Zones */}
-        <div 
-          ref={timeDisplaysRef} 
+        <div
+          ref={timeDisplaysRef}
           className="absolute bottom-12 right-12 flex flex-col gap-3"
         >
           {[
@@ -78,10 +87,18 @@ const LandingPage: FC = () => {
             { city: 'NEW YORK', timezone: 'America/New_York' },
             { city: 'LONDON', timezone: 'Europe/London' },
           ].map(({ city, timezone }) => (
-            <div key={city} className="time-display flex items-center gap-2 text-xs">
-              <Clock size={12} className="text-light-text-muted dark:text-dark-text-muted" />
-              <span className="text-light-text-muted dark:text-dark-text-muted font-medium">{city}</span>
-              <span 
+            <div
+              key={city}
+              className="time-display flex items-center gap-2 text-xs"
+            >
+              <Clock
+                size={12}
+                className="text-light-text-muted dark:text-dark-text-muted"
+              />
+              <span className="text-light-text-muted dark:text-dark-text-muted font-medium">
+                {city}
+              </span>
+              <span
                 className="time-value font-mono font-medium text-light-text-primary dark:text-dark-text-primary"
                 data-timezone={timezone}
               />

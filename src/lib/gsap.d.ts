@@ -11,14 +11,14 @@ import { TextPlugin } from 'gsap/TextPlugin';
 declare const gsap: Core;
 
 export {
-    gsap,
-    CustomEase,
-    ExpoScaleEase,
-    SlowMo,
-    Flip,
-    ScrollTrigger,
-    Observer,
-    ScrollToPlugin,
-    Draggable,
-    TextPlugin
+  gsap,
+  CustomEase,
+  ExpoScaleEase,
+  SlowMo,
+  Flip,
+  ScrollTrigger,
+  Observer,
+  ScrollToPlugin,
+  Draggable,
+  TextPlugin,
 };

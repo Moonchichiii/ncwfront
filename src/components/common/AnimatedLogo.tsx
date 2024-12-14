@@ -13,9 +13,9 @@ const AnimatedLogo: FC<AnimatedLogoProps> = ({ className = '' }) => {
 
     const ctx = gsap.context(() => {
       // Initial state
-      gsap.set(logoRef.current, { 
+      gsap.set(logoRef.current, {
         opacity: 0,
-        scale: 0.8
+        scale: 0.8,
       });
 
       // Animation timeline
@@ -23,7 +23,7 @@ const AnimatedLogo: FC<AnimatedLogoProps> = ({ className = '' }) => {
         opacity: 1,
         scale: 1,
         duration: 1.4,
-        ease: 'elastic.out(1, 0.3)'
+        ease: 'elastic.out(1, 0.3)',
       });
     }, logoRef);
 

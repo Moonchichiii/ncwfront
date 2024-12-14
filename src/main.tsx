@@ -33,5 +33,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
         </ErrorBoundary>
       </QueryClientProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

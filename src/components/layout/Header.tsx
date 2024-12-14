@@ -1,27 +1,34 @@
-import { FC, useEffect, useRef } from 'react'
-import { Link } from 'react-router-dom'
-import ThemeToggle from '@components/common/ThemeToggle'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { Menu, X } from 'lucide-react'
+import { FC, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import ThemeToggle from '@components/common/ThemeToggle';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Menu, X } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 
 interface HeaderProps {
-  showHeader?: boolean
+  showHeader?: boolean;
 }
 
 const Header: FC<HeaderProps> = ({ showHeader = true }) => {
-  const hamburgerRef = useRef<HTMLDivElement>(null)
-  const sidebarRef = useRef<HTMLDivElement>(null)
-  const overlayRef = useRef<HTMLDivElement>(null)
-  const headerRef = useRef<HTMLElement>(null)
+  const hamburgerRef = useRef<HTMLDivElement>(null);
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!showHeader || !hamburgerRef.current || !sidebarRef.current || !headerRef.current || !overlayRef.current) return
+    if (
+      !showHeader ||
+      !hamburgerRef.current ||
+      !sidebarRef.current ||
+      !headerRef.current ||
+      !overlayRef.current
+    )
+      return;
 
     const ctx = gsap.context(() => {
-      gsap.set(hamburgerRef.current, { x: 100, opacity: 0 })
+      gsap.set(hamburgerRef.current, { x: 100, opacity: 0 });
 
       gsap.to(hamburgerRef.current, {
         x: 0,
@@ -33,7 +40,7 @@ const Header: FC<HeaderProps> = ({ showHeader = true }) => {
           start: 'top top+=100',
           toggleActions: 'play none none reset',
         },
-      })
+      });
 
       const openSidebar = () => {
         gsap.to(sidebarRef.current, {
@@ -42,14 +49,14 @@ const Header: FC<HeaderProps> = ({ showHeader = true }) => {
           duration: 0.2,
           ease: 'power3.out',
           pointerEvents: 'auto',
-        })
+        });
         gsap.to(overlayRef.current, {
           opacity: 1,
           duration: 0.2,
           pointerEvents: 'auto',
-        })
-        document.body.style.overflow = 'hidden'
-      }
+        });
+        document.body.style.overflow = 'hidden';
+      };
 
       const closeSidebar = () => {
         gsap.to(sidebarRef.current, {
@@ -58,62 +65,86 @@ const Header: FC<HeaderProps> = ({ showHeader = true }) => {
           duration: 0.2,
           ease: 'power3.in',
           pointerEvents: 'none',
-        })
+        });
         gsap.to(overlayRef.current, {
           opacity: 0,
           duration: 0.2,
           pointerEvents: 'none',
-        })
-        document.body.style.overflow = 'auto'
-      }
+        });
+        document.body.style.overflow = 'auto';
+      };
 
       if (hamburgerRef.current) {
-        hamburgerRef.current.addEventListener('click', openSidebar)
+        hamburgerRef.current.addEventListener('click', openSidebar);
         hamburgerRef.current.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key === 'Enter') openSidebar()
-        })
+          if (e.key === 'Enter') openSidebar();
+        });
       }
 
       if (overlayRef.current) {
-        overlayRef.current.addEventListener('click', closeSidebar)
+        overlayRef.current.addEventListener('click', closeSidebar);
       }
 
       return () => {
         if (hamburgerRef.current) {
-          hamburgerRef.current.removeEventListener('click', openSidebar)
-          hamburgerRef.current.removeEventListener('keydown', (e: KeyboardEvent) => {
-            if (e.key === 'Enter') openSidebar()
-          })
+          hamburgerRef.current.removeEventListener('click', openSidebar);
+          hamburgerRef.current.removeEventListener(
+            'keydown',
+            (e: KeyboardEvent) => {
+              if (e.key === 'Enter') openSidebar();
+            }
+          );
         }
         if (overlayRef.current) {
-          overlayRef.current.removeEventListener('click', closeSidebar)
+          overlayRef.current.removeEventListener('click', closeSidebar);
         }
-      }
-    }, headerRef)
+      };
+    }, headerRef);
 
-    return () => ctx.revert()
-  }, [showHeader])
+    return () => ctx.revert();
+  }, [showHeader]);
 
   return (
     <>
-      <header ref={headerRef} className="bg-white dark:bg-surface-darker shadow fixed w-full z-50 transition-colors duration-300">
+      <header
+        ref={headerRef}
+        className="bg-white dark:bg-surface-darker shadow fixed w-full z-50 transition-colors duration-300"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
           <div className="flex-shrink-0">
-            <Link to="/" className="text-2xl font-bold text-tekhelet-base dark:text-white">
+            <Link
+              to="/"
+              className="text-2xl font-bold text-tekhelet-base dark:text-white"
+            >
               Nordic Code Works
             </Link>
           </div>
-          <nav className="hidden md:flex space-x-4" aria-label="Main Navigation">
-            <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base">
+          <nav
+            className="hidden md:flex space-x-4"
+            aria-label="Main Navigation"
+          >
+            <Link
+              to="/"
+              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            >
               Home
             </Link>
-            <Link to="/about" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base">
+            <Link
+              to="/about"
+              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            >
               About
             </Link>
-            <Link to="/portfolio" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base">
+            <Link
+              to="/portfolio"
+              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            >
               Portfolio
             </Link>
-            <Link to="/contact" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base">
+            <Link
+              to="/contact"
+              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            >
               Contact
             </Link>
           </nav>
@@ -153,13 +184,13 @@ const Header: FC<HeaderProps> = ({ showHeader = true }) => {
                 duration: 0.5,
                 ease: 'power3.in',
                 pointerEvents: 'none',
-              })
+              });
               gsap.to(overlayRef.current, {
                 opacity: 0,
                 duration: 0.5,
                 pointerEvents: 'none',
-              })
-              document.body.style.overflow = 'auto'
+              });
+              document.body.style.overflow = 'auto';
             }}
             aria-label="Close Menu"
             role="button"
@@ -172,90 +203,106 @@ const Header: FC<HeaderProps> = ({ showHeader = true }) => {
                   duration: 0.5,
                   ease: 'power3.in',
                   pointerEvents: 'none',
-                })
+                });
                 gsap.to(overlayRef.current, {
                   opacity: 0,
                   duration: 0.5,
                   pointerEvents: 'none',
-                })
-                document.body.style.overflow = 'auto'
+                });
+                document.body.style.overflow = 'auto';
               }
             }}
           />
         </div>
         <nav className="flex flex-col space-y-4 px-6">
-          <Link to="/" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base" onClick={() => {
-            gsap.to(sidebarRef.current, {
-              x: '100%',
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power3.in',
-              pointerEvents: 'none',
-            })
-            gsap.to(overlayRef.current, {
-              opacity: 0,
-              duration: 0.5,
-              pointerEvents: 'none',
-            })
-            document.body.style.overflow = 'auto'
-          }}>
+          <Link
+            to="/"
+            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            onClick={() => {
+              gsap.to(sidebarRef.current, {
+                x: '100%',
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power3.in',
+                pointerEvents: 'none',
+              });
+              gsap.to(overlayRef.current, {
+                opacity: 0,
+                duration: 0.5,
+                pointerEvents: 'none',
+              });
+              document.body.style.overflow = 'auto';
+            }}
+          >
             Home
           </Link>
-          <Link to="/about" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base" onClick={() => {
-            gsap.to(sidebarRef.current, {
-              x: '100%',
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power3.in',
-              pointerEvents: 'none',
-            })
-            gsap.to(overlayRef.current, {
-              opacity: 0,
-              duration: 0.5,
-              pointerEvents: 'none',
-            })
-            document.body.style.overflow = 'auto'
-          }}>
+          <Link
+            to="/about"
+            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            onClick={() => {
+              gsap.to(sidebarRef.current, {
+                x: '100%',
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power3.in',
+                pointerEvents: 'none',
+              });
+              gsap.to(overlayRef.current, {
+                opacity: 0,
+                duration: 0.5,
+                pointerEvents: 'none',
+              });
+              document.body.style.overflow = 'auto';
+            }}
+          >
             About
           </Link>
-          <Link to="/portfolio" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base" onClick={() => {
-            gsap.to(sidebarRef.current, {
-              x: '100%',
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power3.in',
-              pointerEvents: 'none',
-            })
-            gsap.to(overlayRef.current, {
-              opacity: 0,
-              duration: 0.5,
-              pointerEvents: 'none',
-            })
-            document.body.style.overflow = 'auto'
-          }}>
+          <Link
+            to="/portfolio"
+            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            onClick={() => {
+              gsap.to(sidebarRef.current, {
+                x: '100%',
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power3.in',
+                pointerEvents: 'none',
+              });
+              gsap.to(overlayRef.current, {
+                opacity: 0,
+                duration: 0.5,
+                pointerEvents: 'none',
+              });
+              document.body.style.overflow = 'auto';
+            }}
+          >
             Portfolio
           </Link>
-          <Link to="/contact" className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base" onClick={() => {
-            gsap.to(sidebarRef.current, {
-              x: '100%',
-              opacity: 0,
-              duration: 0.5,
-              ease: 'power3.in',
-              pointerEvents: 'none',
-            })
-            gsap.to(overlayRef.current, {
-              opacity: 0,
-              duration: 0.5,
-              pointerEvents: 'none',
-            })
-            document.body.style.overflow = 'auto'
-          }}>
+          <Link
+            to="/contact"
+            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
+            onClick={() => {
+              gsap.to(sidebarRef.current, {
+                x: '100%',
+                opacity: 0,
+                duration: 0.5,
+                ease: 'power3.in',
+                pointerEvents: 'none',
+              });
+              gsap.to(overlayRef.current, {
+                opacity: 0,
+                duration: 0.5,
+                pointerEvents: 'none',
+              });
+              document.body.style.overflow = 'auto';
+            }}
+          >
             Contact
           </Link>
         </nav>
       </aside>
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

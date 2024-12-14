@@ -1,5 +1,5 @@
 import { FC, ReactNode, useRef, useEffect } from 'react';
-import { gsap, ScrollTrigger } from '@/lib/gsap';
+import { gsap } from '@/lib/gsap';
 
 interface AnimatedSectionProps {
   children: ReactNode;
@@ -12,13 +12,12 @@ const AnimatedSection: FC<AnimatedSectionProps> = ({ children, className }) => {
   useEffect(() => {
     if (!sectionRef.current) return;
 
-    // Create animation context
     const ctx = gsap.context(() => {
       gsap.fromTo(
         sectionRef.current,
-        { 
-          opacity: 0, 
-          y: 50 
+        {
+          opacity: 0,
+          y: 50,
         },
         {
           opacity: 1,
@@ -34,7 +33,6 @@ const AnimatedSection: FC<AnimatedSectionProps> = ({ children, className }) => {
       );
     }, sectionRef);
 
-    // Cleanup
     return () => ctx.revert();
   }, []);
 
