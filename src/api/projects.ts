@@ -1,4 +1,3 @@
-// src/api/projects.ts
 import apiClient from './config';
 
 export const getProjects = async () => {
@@ -6,4 +5,4 @@ export const getProjects = async () => {
   return response.data;
 };
 
-// Add more project-related API calls as needed
+

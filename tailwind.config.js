@@ -8,67 +8,56 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Theme 1: Dark Mode (Black Background)
         dark: {
           bg: {
-            primary: '#121212', // Main background
-            secondary: '#1E1E1E', // Slightly lighter black for cards/sections
-            tertiary: '#2D2D2D', // Elevated elements
+            primary: '#121212',
+            secondary: '#1E1E1E',
+            tertiary: '#2D2D2D',
           },
           text: {
-            primary: '#FFFFFF', // High contrast white text
-            secondary: '#E0E0E0', // Slightly muted white
-            muted: '#A0A0A0', // Low emphasis text
+            primary: '#FFFFFF',
+            secondary: '#E0E0E0',
+            muted: '#A0A0A0',
           },
-          // Pastel accents with good contrast on dark
           accent: {
-            blue: '#7EB6FF', // Pastel blue
-            purple: '#B39DDB', // Pastel purple
-            green: '#81C784', // Pastel green
-            yellow: '#FFE082', // Pastel yellow
-            pink: '#F48FB1', // Pastel pink
+            blue: '#7EB6FF',
+            purple: '#B39DDB',
+            green: '#81C784',
+            yellow: '#FFE082',
+            pink: '#F48FB1',
           },
         },
-
-        // Theme 2: Light Mode (White Background)
         light: {
           bg: {
-            primary: '#FFFFFF', // Main background
-            secondary: '#F5F5F5', // Slightly darker white for cards/sections
-            tertiary: '#EEEEEE', // Elevated elements
+            primary: '#FFFFFF',
+            secondary: '#F5F5F5',
+            tertiary: '#EEEEEE',
           },
           text: {
-            primary: '#121212', // High contrast black text
-            secondary: '#424242', // Slightly muted black
-            muted: '#757575', // Low emphasis text
+            primary: '#121212',
+            secondary: '#424242',
+            muted: '#757575',
           },
-          // Darker pastel accents for good contrast on light
           accent: {
-            blue: '#2196F3', // Stronger blue
-            purple: '#7E57C2', // Stronger purple
-            green: '#4CAF50', // Stronger green
-            yellow: '#FFC107', // Stronger yellow
-            pink: '#EC407A', // Stronger pink
+            blue: '#2196F3',
+            purple: '#7E57C2',
+            green: '#4CAF50',
+            yellow: '#FFC107',
+            pink: '#EC407A',
           },
         },
-
-        // Shared semantic colors
         status: {
           success: '#4CAF50',
           warning: '#FF9800',
           error: '#F44336',
           info: '#2196F3',
         },
-
-        // Surface colors for cards and overlays
         surface: {
-          // Dark mode surfaces
           dark: {
             default: 'rgba(30, 30, 30, 0.95)',
             hover: 'rgba(45, 45, 45, 0.95)',
             active: 'rgba(60, 60, 60, 0.95)',
           },
-          // Light mode surfaces
           light: {
             default: 'rgba(255, 255, 255, 0.95)',
             hover: 'rgba(245, 245, 245, 0.95)',
@@ -76,37 +65,27 @@ export default {
           },
         },
       },
-
-      // Typography
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
         display: ['Poppins', 'system-ui', 'sans-serif'],
         logo: ['Modak', 'system-ui', 'sans-serif'],
       },
-
-      // Custom spacing for consistent layout
       spacing: {
         18: '4.5rem',
         72: '18rem',
         84: '21rem',
         96: '24rem',
       },
-
-      // Animation durations
       transitionDuration: {
         250: '250ms',
         350: '350ms',
         450: '450ms',
       },
-
-      // Animation timing functions
       transitionTimingFunction: {
         'bounce-in': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
         'smooth-out': 'cubic-bezier(0.4, 0, 0.2, 1)',
       },
-
-      // Backdrop blur values
       backdropBlur: {
         xs: '2px',
         sm: '4px',
@@ -119,7 +98,6 @@ export default {
   plugins: [
     forms,
     typography,
-    // Add custom plugin for dark mode transitions
     function ({ addBase }) {
       addBase({
         'html.dark': {

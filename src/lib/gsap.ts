@@ -1,4 +1,3 @@
-// src/lib/gsap.ts
 import gsap from 'gsap';
 import CustomEase from 'gsap/CustomEase';
 import { ExpoScaleEase, SlowMo } from 'gsap/EasePack';
@@ -22,7 +21,7 @@ gsap.registerPlugin(
     TextPlugin
 );
 
-// Export for use in other components
+// Export everything
 export {
     gsap,
     CustomEase,
