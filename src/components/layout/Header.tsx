@@ -1,307 +1,154 @@
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ThemeToggle from '@components/common/ThemeToggle';
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Menu, X } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
 interface HeaderProps {
-  showHeader?: boolean;
+  currentSection: number;
 }
 
-const Header: FC<HeaderProps> = ({ showHeader = true }) => {
-  const hamburgerRef = useRef<HTMLDivElement>(null);
+const Header: FC<HeaderProps> = ({ currentSection }) => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
-  const headerRef = useRef<HTMLElement>(null);
+
+  const isLandingPage = currentSection === 0;
 
   useEffect(() => {
-    if (
-      !showHeader ||
-      !hamburgerRef.current ||
-      !sidebarRef.current ||
-      !headerRef.current ||
-      !overlayRef.current
-    )
-      return;
+    if (!menuRef.current || !sidebarRef.current) return;
 
     const ctx = gsap.context(() => {
-      gsap.set(hamburgerRef.current, { x: 100, opacity: 0 });
-
-      gsap.to(hamburgerRef.current, {
-        x: 0,
+      gsap.set(sidebarRef.current, {
+        clipPath: 'circle(0% at calc(100% - 28px) 28px)',
         opacity: 1,
-        duration: 1,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: headerRef.current,
-          start: 'top top+=100',
-          toggleActions: 'play none none reset',
-        },
+        pointerEvents: 'none',
       });
 
-      const openSidebar = () => {
-        gsap.to(sidebarRef.current, {
-          x: 0,
-          opacity: 1,
-          duration: 0.2,
-          ease: 'power3.out',
-          pointerEvents: 'auto',
-        });
-        gsap.to(overlayRef.current, {
-          opacity: 1,
-          duration: 0.2,
-          pointerEvents: 'auto',
-        });
-        document.body.style.overflow = 'hidden';
-      };
-
-      const closeSidebar = () => {
-        gsap.to(sidebarRef.current, {
-          x: '100%',
-          opacity: 0,
-          duration: 0.2,
-          ease: 'power3.in',
-          pointerEvents: 'none',
-        });
-        gsap.to(overlayRef.current, {
-          opacity: 0,
-          duration: 0.2,
-          pointerEvents: 'none',
-        });
-        document.body.style.overflow = 'auto';
-      };
-
-      if (hamburgerRef.current) {
-        hamburgerRef.current.addEventListener('click', openSidebar);
-        hamburgerRef.current.addEventListener('keydown', (e: KeyboardEvent) => {
-          if (e.key === 'Enter') openSidebar();
-        });
-      }
-
-      if (overlayRef.current) {
-        overlayRef.current.addEventListener('click', closeSidebar);
-      }
-
-      return () => {
-        if (hamburgerRef.current) {
-          hamburgerRef.current.removeEventListener('click', openSidebar);
-          hamburgerRef.current.removeEventListener(
-            'keydown',
-            (e: KeyboardEvent) => {
-              if (e.key === 'Enter') openSidebar();
-            }
-          );
-        }
-        if (overlayRef.current) {
-          overlayRef.current.removeEventListener('click', closeSidebar);
-        }
-      };
-    }, headerRef);
+      gsap.set(overlayRef.current, {
+        opacity: 0,
+        pointerEvents: 'none',
+      });
+    }, menuRef);
 
     return () => ctx.revert();
-  }, [showHeader]);
+  }, []);
+
+  const toggleMenu = () => {
+    if (!isMenuOpen) {
+      setIsMenuOpen(true);
+      
+      gsap.timeline()
+        .to(overlayRef.current, {
+          opacity: 1,
+          pointerEvents: 'auto',
+          duration: 0.3,
+        })
+        .to(sidebarRef.current, {
+          clipPath: 'circle(170% at calc(100% - 28px) 28px)',
+          pointerEvents: 'auto',
+          duration: 0.75,
+          ease: 'power3.inOut',
+        }, '-=0.2');
+
+      document.body.style.overflow = 'hidden';
+    } else {
+      setIsMenuOpen(false);
+      
+      gsap.timeline()
+        .to(sidebarRef.current, {
+          clipPath: 'circle(0% at calc(100% - 28px) 28px)',
+          pointerEvents: 'none',
+          duration: 0.5,
+          ease: 'power3.inOut',
+        })
+        .to(overlayRef.current, {
+          opacity: 0,
+          pointerEvents: 'none',
+          duration: 0.3,
+        }, '-=0.3');
+
+      document.body.style.overflow = 'auto';
+    }
+  };
 
   return (
-    <>
-      <header
-        ref={headerRef}
-        className="bg-white dark:bg-surface-darker shadow fixed w-full z-50 transition-colors duration-300"
+    <header ref={menuRef} className="fixed top-0 right-0 z-[60] px-6 py-5 sm:p-6">
+      {/* Menu Button */}
+      <button
+        onClick={toggleMenu}
+        className={`flex items-center gap-2 text-light-text-primary dark:text-dark-text-primary focus:outline-none transition-all duration-300`}
+        aria-label="Toggle Menu"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex justify-between items-center">
-          <div className="flex-shrink-0">
-            <Link
-              to="/"
-              className="text-2xl font-bold text-tekhelet-base dark:text-white"
-            >
-              Nordic Code Works
-            </Link>
-          </div>
-          <nav
-            className="hidden md:flex space-x-4"
-            aria-label="Main Navigation"
-          >
-            <Link
-              to="/"
-              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            >
-              Home
-            </Link>
-            <Link
-              to="/about"
-              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            >
-              About
-            </Link>
-            <Link
-              to="/portfolio"
-              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            >
-              Portfolio
-            </Link>
-            <Link
-              to="/contact"
-              className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            >
-              Contact
-            </Link>
-          </nav>
-          <div className="flex items-center">
-            <ThemeToggle />
-            <div
-              ref={hamburgerRef}
-              className="md:hidden ml-4 cursor-pointer"
-              aria-label="Open Menu"
-              role="button"
-              tabIndex={0}
-            >
-              <Menu className="w-6 h-6 text-gray-700 dark:text-gray-300 hover:text-tekhelet-base transition-colors" />
+        {isLandingPage ? (
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md flex items-center justify-center group hover:bg-white/20 dark:hover:bg-black/20 transition-colors">
+            <div className="flex items-center gap-2 select-none">
+              <span className="w-2 h-2 bg-light-accent-blue dark:bg-dark-accent-blue rounded-full" />
+              <span className="block text-sm font-medium tracking-wide">menu</span>
             </div>
           </div>
-        </div>
-      </header>
+        ) : (
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md flex items-center justify-center group hover:bg-white/20 dark:hover:bg-black/20 transition-colors">
+            <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-light-text-primary dark:text-dark-text-primary" />
+          </div>
+        )}
+      </button>
 
+      {/* Overlay */}
       <div
         ref={overlayRef}
-        className="fixed inset-0 bg-black bg-opacity-50 opacity-0 pointer-events-none transition-opacity duration-500 z-40"
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={toggleMenu}
         aria-hidden="true"
-      ></div>
+      />
 
+      {/* Sidebar */}
       <aside
         ref={sidebarRef}
-        className="fixed top-0 right-0 w-64 h-full bg-white dark:bg-surface-darker shadow-lg transform translate-x-full opacity-0 pointer-events-none transition-transform transition-opacity duration-500 z-50"
-        aria-label="Sidebar Navigation"
+        className="fixed top-4 right-4 w-[calc(100vw-2rem)] max-w-[20rem] h-[calc(100vh-2rem)] bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 shadow-2xl rounded-[2rem] overflow-hidden backdrop-blur-md border border-white/10 dark:border-white/5"
+        aria-label="Main Navigation"
       >
-        <div className="flex justify-end p-4">
-          <X
-            className="w-6 h-6 text-gray-700 dark:text-gray-300 hover:text-tekhelet-base cursor-pointer transition-colors"
-            onClick={() => {
-              gsap.to(sidebarRef.current, {
-                x: '100%',
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-                pointerEvents: 'none',
-              });
-              gsap.to(overlayRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                pointerEvents: 'none',
-              });
-              document.body.style.overflow = 'auto';
-            }}
-            aria-label="Close Menu"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                gsap.to(sidebarRef.current, {
-                  x: '100%',
-                  opacity: 0,
-                  duration: 0.5,
-                  ease: 'power3.in',
-                  pointerEvents: 'none',
-                });
-                gsap.to(overlayRef.current, {
-                  opacity: 0,
-                  duration: 0.5,
-                  pointerEvents: 'none',
-                });
-                document.body.style.overflow = 'auto';
-              }
-            }}
-          />
-        </div>
-        <nav className="flex flex-col space-y-4 px-6">
-          <Link
-            to="/"
-            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            onClick={() => {
-              gsap.to(sidebarRef.current, {
-                x: '100%',
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-                pointerEvents: 'none',
-              });
-              gsap.to(overlayRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                pointerEvents: 'none',
-              });
-              document.body.style.overflow = 'auto';
-            }}
-          >
-            Home
-          </Link>
-          <Link
-            to="/about"
-            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            onClick={() => {
-              gsap.to(sidebarRef.current, {
-                x: '100%',
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-                pointerEvents: 'none',
-              });
-              gsap.to(overlayRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                pointerEvents: 'none',
-              });
-              document.body.style.overflow = 'auto';
-            }}
-          >
-            About
-          </Link>
-          <Link
-            to="/portfolio"
-            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            onClick={() => {
-              gsap.to(sidebarRef.current, {
-                x: '100%',
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-                pointerEvents: 'none',
-              });
-              gsap.to(overlayRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                pointerEvents: 'none',
-              });
-              document.body.style.overflow = 'auto';
-            }}
-          >
-            Portfolio
-          </Link>
-          <Link
-            to="/contact"
-            className="text-gray-700 dark:text-gray-300 hover:text-tekhelet-base"
-            onClick={() => {
-              gsap.to(sidebarRef.current, {
-                x: '100%',
-                opacity: 0,
-                duration: 0.5,
-                ease: 'power3.in',
-                pointerEvents: 'none',
-              });
-              gsap.to(overlayRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                pointerEvents: 'none',
-              });
-              document.body.style.overflow = 'auto';
-            }}
-          >
-            Contact
-          </Link>
+        {/* Glass effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/10 pointer-events-none" />
+
+        {/* Close Button */}
+        <button
+          onClick={toggleMenu}
+          className="absolute top-4 right-4 p-2 text-light-text-primary dark:text-dark-text-primary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors z-[70]"
+          aria-label="Close Menu"
+        >
+          <X className="w-6 h-6" />
+        </button>
+
+        {/* ThemeToggle - Only show when not on landing page */}
+        {!isLandingPage && (
+          <div className="absolute top-4 left-4 z-[70]">
+            <ThemeToggle />
+          </div>
+        )}
+
+        <nav className="relative h-full flex flex-col pt-24 px-8">
+          <div className="flex-1 space-y-6">
+            {[
+              { to: '/', label: 'Home' },
+              { to: '/about', label: 'About' },
+              { to: '/portfolio', label: 'Portfolio' },
+              { to: '/contact', label: 'Contact' },
+            ].map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                onClick={toggleMenu}
+                className="block text-xl sm:text-2xl font-light text-light-text-primary dark:text-dark-text-primary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors"
+              >
+                {label}
+              </Link>
+            ))}
+          </div>
         </nav>
       </aside>
-    </>
+    </header>
   );
 };
 

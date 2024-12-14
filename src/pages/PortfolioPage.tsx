@@ -1,61 +1,119 @@
-import { FC } from 'react';
-import useProjects from '@hooks/useProjects';
+import { FC, useState } from 'react';
+import AnimatedSection from '@/components/animation/AnimatedSection';
 import { Link } from 'react-router-dom';
+import { ExternalLink, ArrowRight } from 'lucide-react';
+import useProjects from '@/hooks/useProjects';
 
 const PortfolioPage: FC = () => {
-  const { data, isLoading, isError, error } = useProjects();
+  const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
+  const { data, isLoading, error } = useProjects({ category: selectedCategory });
+
+  const categories = [
+    { id: undefined, label: 'All' },
+    { id: 'Design', label: 'Design' },
+    { id: 'Development', label: 'Development' },
+  ];
 
   if (isLoading) {
     return (
-      <div
-        className="flex items-center justify-center min-h-screen"
-        role="status"
-        aria-live="polite"
-      >
-        Loading...
-      </div>
+      <main className="container mx-auto px-4 py-20">
+        <div className="h-screen flex items-center justify-center">
+          <div className="text-light-text-secondary dark:text-dark-text-secondary">
+            Loading projects...
+          </div>
+        </div>
+      </main>
     );
   }
 
-  if (isError) {
+  if (error) {
     return (
-      <div
-        className="flex items-center justify-center min-h-screen"
-        role="alert"
-      >
-        Error: {error.message}
-      </div>
+      <main className="container mx-auto px-4 py-20">
+        <div className="h-screen flex items-center justify-center">
+          <div className="text-status-error">Error loading projects</div>
+        </div>
+      </main>
     );
   }
 
   return (
     <main className="container mx-auto px-4 py-20">
-      <h1 className="text-4xl font-bold mb-12">Our Projects</h1>
-      <section
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-        aria-label="Project List"
-      >
+      <AnimatedSection>
+        <header className="mb-16 max-w-3xl">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8">
+            Creating next level digital products
+          </h1>
+          <div className="flex gap-4">
+            {categories.map((category) => (
+              <button
+                key={category.label}
+                onClick={() => setSelectedCategory(category.id)}
+                className={`px-6 py-2 rounded-full transition-colors ${
+                  selectedCategory === category.id
+                    ? 'bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary'
+                    : 'hover:bg-light-bg-secondary dark:hover:bg-dark-bg-secondary text-light-text-secondary dark:text-dark-text-secondary'
+                }`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </div>
+        </header>
+      </AnimatedSection>
+
+      <section className="space-y-6">
         {data?.results.map((project) => (
-          <article
-            key={project.id}
-            className="block border border-gray-200 dark:border-white/10 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300"
-          >
-            <Link to={`/portfolio/${project.id}`} className="block">
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{project.title}</h2>
-                <p className="text-gray-600 dark:text-gray-300">
-                  {project.description}
-                </p>
-              </div>
+          <AnimatedSection key={project.id}>
+            <Link 
+              to={project.link}
+              className="block group"
+            >
+              <article className="grid grid-cols-12 items-center py-8 border-t border-light-text-primary/10 dark:border-dark-text-primary/10 hover:bg-light-bg-secondary/50 dark:hover:bg-dark-bg-secondary/50 transition-colors rounded-2xl px-4">
+                <div className="col-span-12 md:col-span-3">
+                  <h2 className="text-2xl font-light group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
+                    {project.title}
+                  </h2>
+                </div>
+                
+                <div className="col-span-12 md:col-span-3 text-light-text-secondary dark:text-dark-text-secondary">
+                  {project.location}
+                </div>
+                
+                <div className="col-span-12 md:col-span-4 text-light-text-secondary dark:text-dark-text-secondary">
+                  {project.services}
+                </div>
+                
+                <div className="col-span-11 md:col-span-1 text-light-text-secondary dark:text-dark-text-secondary">
+                  {project.year}
+                </div>
+
+                <div className="col-span-1 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ArrowRight className="w-6 h-6 text-light-accent-blue dark:text-dark-accent-blue transform group-hover:translate-x-1 transition-transform" />
+                </div>
+              </article>
             </Link>
-          </article>
+          </AnimatedSection>
         ))}
+
+        {data?.results.length === 0 && (
+          <div className="text-center py-12 text-light-text-secondary dark:text-dark-text-secondary">
+            No projects found in this category
+          </div>
+        )}
       </section>
+
+      {/* Contact CTA */}
+      <AnimatedSection>
+        <div className="mt-20 py-12 text-center">
+          <Link 
+            to="/contact"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
+          >
+            Start a Project
+            <ExternalLink className="w-4 h-4" />
+          </Link>
+        </div>
+      </AnimatedSection>
     </main>
   );
 };

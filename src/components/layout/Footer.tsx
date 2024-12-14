@@ -1,85 +1,83 @@
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
+import { Linkedin, Github, Mail } from 'lucide-react';
 
 const Footer: FC = () => {
+  const socials = [
+    {
+      icon: Github,
+      href: 'https://github.com/Moonchichiii',
+      label: 'GitHub'
+    },
+    {
+      icon: Linkedin,
+      href: 'https://linkedin.com/in/mats-gustafsson-a57643103',
+      label: 'LinkedIn'
+    },
+    {
+      icon: Mail,
+      href: 'mailto:mats.gustafsson83@gmail.com',
+      label: 'Email'
+    }
+  ];
+
   return (
-    <footer
-      className="bg-gray-100 dark:bg-surface-darker py-8 mt-auto"
-      role="contentinfo"
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between">
-        <nav aria-labelledby="quick-links" className="mb-6 md:mb-0">
-          <h4
-            id="quick-links"
-            className="text-lg font-semibold text-gray-700 dark:text-gray-300"
-          >
-            Quick Links
-          </h4>
-          <ul className="mt-2 space-y-2">
-            <li>
-              <Link
-                to="/"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/about"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
-              >
-                About
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/portfolio"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
-              >
-                Portfolio
-              </Link>
-            </li>
-            <li>
-              <Link
-                to="/contact"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
-              >
-                Contact
-              </Link>
-            </li>
-          </ul>
-        </nav>
-        <nav aria-labelledby="legal" className="mb-6 md:mb-0">
-          <h4
-            id="legal"
-            className="text-lg font-semibold text-gray-700 dark:text-gray-300"
-          >
-            Legal
-          </h4>
-          <ul className="mt-2 space-y-2">
-            <li>
-              <Link
-                to="/privacy-policy"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
+    <footer className="border-t border-light-text-primary/10 dark:border-dark-text-primary/10 py-12 mt-auto" role="contentinfo">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
+          {/* Social Links */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-light">Connect</h3>
+            <div className="flex gap-4">
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group"
+                  aria-label={social.label}
+                >
+                  <div className="p-3 rounded-full border border-light-text-primary/10 dark:border-dark-text-primary/10 hover:border-light-accent-blue dark:hover:border-dark-accent-blue transition-colors">
+                    <social.icon 
+                      className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors" 
+                      aria-hidden="true" 
+                    />
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Legal Links */}
+          <div className="space-y-6">
+            <h3 className="text-2xl font-light">Legal</h3>
+            <div className="space-y-4">
+              <Link 
+                to="/privacy-policy" 
+                className="block text-light-text-secondary dark:text-dark-text-secondary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors"
               >
                 Privacy Policy
               </Link>
-            </li>
-            <li>
-              <Link
-                to="/terms-of-service"
-                className="text-gray-600 dark:text-gray-400 hover:text-tekhelet-base"
+              <Link 
+                to="/terms-of-service" 
+                className="block text-light-text-secondary dark:text-dark-text-secondary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors"
               >
                 Terms of Service
               </Link>
-            </li>
-          </ul>
-        </nav>
-      </div>
-      <div className="mt-8 text-center text-gray-500 dark:text-gray-400">
-        &copy; {new Date().getFullYear()} Nordic Code Works. All rights
-        reserved.
+            </div>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-light-text-primary/10 dark:border-dark-text-primary/10">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 md:mb-0">
+            &copy; {new Date().getFullYear()} Nordic Code Works. All rights reserved.
+          </p>
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
+            Made in Sweden
+          </p>
+        </div>
       </div>
     </footer>
   );
