@@ -22,12 +22,17 @@ const Footer: FC = () => {
   ];
 
   return (
-    <footer className="border-t border-light-text-primary/10 dark:border-dark-text-primary/10 py-12 mt-auto" role="contentinfo">
+    <footer 
+      className="border-t border-light-text-primary/10 dark:border-dark-text-primary/10 py-12 mt-auto" 
+      role="contentinfo"
+    >
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
           {/* Social Links */}
           <div className="space-y-6">
-            <h3 className="text-2xl font-light">Connect</h3>
+            <h3 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">
+              Connect
+            </h3>
             <div className="flex gap-4">
               {socials.map((social) => (
                 <a
@@ -38,9 +43,9 @@ const Footer: FC = () => {
                   className="group"
                   aria-label={social.label}
                 >
-                  <div className="p-3 rounded-full border border-light-text-primary/10 dark:border-dark-text-primary/10 hover:border-light-accent-blue dark:hover:border-dark-accent-blue transition-colors">
+                  <div className="p-3 rounded-full border border-light-text-primary/10 dark:border-dark-text-primary/10 hover:border-light-accent-blue dark:hover:border-dark-accent-blue transition-all duration-300 group-hover:scale-105">
                     <social.icon 
-                      className="w-5 h-5 text-light-text-primary dark:text-dark-text-primary group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors" 
+                      className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors" 
                       aria-hidden="true" 
                     />
                   </div>
@@ -51,7 +56,9 @@ const Footer: FC = () => {
 
           {/* Legal Links */}
           <div className="space-y-6">
-            <h3 className="text-2xl font-light">Legal</h3>
+            <h3 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">
+              Legal
+            </h3>
             <div className="space-y-4">
               <Link 
                 to="/privacy-policy" 
@@ -71,10 +78,10 @@ const Footer: FC = () => {
 
         {/* Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-light-text-primary/10 dark:border-dark-text-primary/10">
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 md:mb-0">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm mb-4 md:mb-0 font-light">
             &copy; {new Date().getFullYear()} Nordic Code Works. All rights reserved.
           </p>
-          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm">
+          <p className="text-light-text-secondary dark:text-dark-text-secondary text-sm font-light">
             Made in Sweden
           </p>
         </div>

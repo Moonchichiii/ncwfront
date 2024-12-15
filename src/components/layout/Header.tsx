@@ -85,7 +85,7 @@ const Header: FC<HeaderProps> = ({ currentSection }) => {
           <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-md flex items-center justify-center group hover:bg-white/20 dark:hover:bg-black/20 transition-colors">
             <div className="flex items-center gap-2 select-none">
               <span className="w-2 h-2 bg-light-accent-blue dark:bg-dark-accent-blue rounded-full" />
-              <span className="block text-sm font-medium tracking-wide">menu</span>
+              <span className="block text-lg font-medium tracking-wide">menu</span>
             </div>
           </div>
         ) : (

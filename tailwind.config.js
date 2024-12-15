@@ -18,6 +18,7 @@ export default {
             primary: '#FFFFFF',
             secondary: '#E0E0E0',
             muted: '#A0A0A0',
+            heading: '#F5F5F5',
           },
           accent: {
             blue: '#7EB6FF',
@@ -37,6 +38,7 @@ export default {
             primary: '#121212',
             secondary: '#424242',
             muted: '#757575',
+            heading: '#121212',
           },
           accent: {
             blue: '#2196F3',
@@ -66,10 +68,10 @@ export default {
         },
       },
       fontFamily: {
+        logo: ['Modak', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
         display: ['Poppins', 'system-ui', 'sans-serif'],
-        logo: ['Modak', 'system-ui', 'sans-serif'],
       },
       spacing: {
         18: '4.5rem',
@@ -102,6 +104,13 @@ export default {
       addBase({
         'html.dark': {
           transition: 'background-color 350ms ease-in-out',
+        },
+        'h1, h2, h3': {
+          color: 'var(--tw-text-opacity)',
+        },
+        '.dark h1, .dark h2, .dark h3': {
+          '--tw-text-opacity': '1',
+          color: '#F5F5F5',
         },
       });
     },

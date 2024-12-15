@@ -14,6 +14,16 @@ const AnimatedLogo: FC<AnimatedLogoProps> = ({ className = '' }) => {
   const worksRef = useRef<HTMLDivElement>(null);
   const yearRef = useRef<HTMLDivElement>(null);
 
+
+  useEffect(() => {
+    document.fonts.ready.then(() => {
+      console.log('Fonts loaded:', 
+        document.fonts.check('1em Modak'),
+        Array.from(document.fonts).map(f => f.family)
+      );
+    });
+  }, []);
+
   useEffect(() => {
     if (!logoRef.current) return;
 

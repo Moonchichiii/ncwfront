@@ -10,16 +10,16 @@ const NotFoundPage: React.FC = () => {
         <div className="max-w-2xl mx-auto text-center">
           {/* Large 404 */}
           <div className="mb-12">
-            <span className="text-8xl sm:text-9xl font-light inline-block bg-gradient-to-r from-light-accent-blue to-light-accent-purple dark:from-dark-accent-blue dark:to-dark-accent-purple bg-clip-text text-transparent">
-              404
-            </span>
+          <span className="text-8xl sm:text-9xl font-light inline-block bg-gradient-to-r from-light-accent-blue to-light-accent-purple dark:from-dark-accent-blue dark:to-dark-accent-purple bg-clip-text text-transparent">
+          404
+        </span>
           </div>
 
           {/* Message */}
           <div className="space-y-6 mb-12">
-            <h1 className="text-3xl sm:text-4xl font-light">
-              This page has moved or doesn't exist
-            </h1>
+          <h1 className="text-3xl sm:text-4xl font-light text-light-text-primary dark:text-dark-text-heading">
+          This page has moved or doesn't exist
+        </h1>
             <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary">
               The page you're looking for might have been removed, had its name changed, 
               or is temporarily unavailable.

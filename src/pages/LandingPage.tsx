@@ -112,7 +112,7 @@ const LandingPage: FC<LandingPageProps> = ({ currentSection }) => {
         <div className="py-8 sm:py-12 md:py-16 lg:py-20 transform-gpu relative">
           <AnimatedLogo className="scale-[0.65] sm:scale-75 md:scale-90 lg:scale-100" />
           
-          {/* Scroll Indicator*/}
+          {/* Scroll Indicator - Closer to WORKS text */}
           <div
             ref={scrollIndicatorRef}
             onClick={handleScrollClick}

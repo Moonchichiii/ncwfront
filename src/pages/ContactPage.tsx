@@ -29,20 +29,20 @@ const services = [
 const pricingGuide = [
   {
     type: 'Basic Website',
-    range: '€400 - €600',
-    duration: '2-3 weeks',
+    range: '€150 - €300',
+    duration: '1-2 weeks',
     includes: ['Landing Page', 'Contact Form', 'Basic SEO', 'Mobile Responsive']
   },
   {
     type: 'Advanced Website',
-    range: '€600 - €900',
+    range: '€300 - €700',
     duration: '1-2 months',
     includes: ['Multiple Pages', 'CMS Integration', 'Advanced SEO', 'Performance Optimization']
   },
   {
     type: 'Full Stack Application',
-    range: '€900 - €1200',
-    duration: '2-3 months',
+    range: '€700 - €1200',
+    duration: '1-2 months',
     includes: ['Custom Backend', 'Database', 'User Authentication', 'API Integration']
   }
 ];
@@ -58,7 +58,7 @@ const PricingAccordion: FC<{ tier: typeof pricingGuide[0] }> = ({ tier }) => {
         className="w-full flex justify-between items-start py-4 text-left group"
       >
         <div>
-          <h3 className="text-xl font-light group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
+        <h3 className="text-xl font-light text-light-text-primary dark:text-dark-text-heading group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
             {tier.type}
           </h3>
           <p className="text-light-accent-blue dark:text-dark-accent-blue font-medium mt-1">
@@ -129,7 +129,7 @@ const ContactPage: FC = () => {
     <main className="container mx-auto px-4 py-20">
       {/* Hero Section */}
       <AnimatedSection className="mb-24">
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8">
+      <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8 text-light-text-primary dark:text-dark-text-heading">
           Let's project <br />together
         </h1>
         <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-2xl">
@@ -146,7 +146,7 @@ const ContactPage: FC = () => {
             <div className="space-y-12">
               <div className="relative">
                 <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">01</span>
-                <label className="text-2xl font-light mb-4 block">What's your name?</label>
+                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's your name?</label>
                 <input
                   type="text"
                   {...register('name')}
@@ -158,7 +158,7 @@ const ContactPage: FC = () => {
 
               <div className="relative">
                 <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">02</span>
-                <label className="text-2xl font-light mb-4 block">What's your email?</label>
+                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's your email?</label>
                 <input
                   type="email"
                   {...register('email')}
@@ -170,7 +170,7 @@ const ContactPage: FC = () => {
 
               <div className="relative">
                 <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">03</span>
-                <label className="text-2xl font-light mb-4 block">What's the name of your organization?</label>
+                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's the name of your organization?</label>
                 <input
                   type="text"
                   {...register('organization')}
@@ -181,7 +181,7 @@ const ContactPage: FC = () => {
 
               <div className="relative">
                 <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">04</span>
-                <label className="text-2xl font-light mb-4 block">Your message</label>
+                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">Your message</label>
                 <textarea
                   {...register('message')}
                   className="w-full bg-transparent border-b border-light-text-primary/20 dark:border-dark-text-primary/20 py-3 focus:outline-none focus:border-light-accent-blue dark:focus:border-dark-accent-blue transition-colors resize-none"
@@ -206,7 +206,7 @@ const ContactPage: FC = () => {
      {/* Pricing Guide */}
      <AnimatedSection className="space-y-12">
      <div className="space-y-8">
-       <h2 className="text-2xl font-light">Pricing Guide</h2>
+     <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Pricing Guide</h2>
        
        {/* Mobile Pricing */}
        <div className="lg:hidden">
@@ -251,7 +251,7 @@ const ContactPage: FC = () => {
 
      {/* Direct Contact */}
      <div className="pt-8">
-       <h2 className="text-2xl font-light mb-4">Direct Contact</h2>
+     <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Direct Contact</h2>
        <a 
          href="mailto:contact@nordiccodeworks.com"
          className="flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors"

@@ -15,9 +15,11 @@ const ThemeToggle: FC = () => {
     const root = window.document.documentElement;
     if (isDarkMode) {
       root.classList.add('dark');
+      root.style.colorScheme = 'dark'; 
       localStorage.setItem('theme', 'dark');
     } else {
       root.classList.remove('dark');
+      root.style.colorScheme = 'light';
       localStorage.setItem('theme', 'light');
     }
   }, [isDarkMode]);

@@ -14,6 +14,7 @@ const PortfolioPage: FC = () => {
     { id: 'Development', label: 'Development' },
   ];
 
+  // First check for loading state
   if (isLoading) {
     return (
       <main className="container mx-auto px-4 py-20">
@@ -26,6 +27,7 @@ const PortfolioPage: FC = () => {
     );
   }
 
+  // Then check for error state
   if (error) {
     return (
       <main className="container mx-auto px-4 py-20">
@@ -36,11 +38,13 @@ const PortfolioPage: FC = () => {
     );
   }
 
+  const projects = data?.results || [];
+
   return (
     <main className="container mx-auto px-4 py-20">
       <AnimatedSection>
         <header className="mb-16 max-w-3xl">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8 text-light-text-primary dark:text-dark-text-heading">
             Creating next level digital products
           </h1>
           <div className="flex gap-4">
@@ -62,31 +66,24 @@ const PortfolioPage: FC = () => {
       </AnimatedSection>
 
       <section className="space-y-6">
-        {data?.results.map((project) => (
+        {projects.map((project) => (
           <AnimatedSection key={project.id}>
-            <Link 
-              to={project.link}
-              className="block group"
-            >
+            <Link to={project.link} className="block group">
               <article className="grid grid-cols-12 items-center py-8 border-t border-light-text-primary/10 dark:border-dark-text-primary/10 hover:bg-light-bg-secondary/50 dark:hover:bg-dark-bg-secondary/50 transition-colors rounded-2xl px-4">
                 <div className="col-span-12 md:col-span-3">
-                  <h2 className="text-2xl font-light group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
+                  <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
                     {project.title}
                   </h2>
                 </div>
-                
                 <div className="col-span-12 md:col-span-3 text-light-text-secondary dark:text-dark-text-secondary">
                   {project.location}
                 </div>
-                
                 <div className="col-span-12 md:col-span-4 text-light-text-secondary dark:text-dark-text-secondary">
                   {project.services}
                 </div>
-                
                 <div className="col-span-11 md:col-span-1 text-light-text-secondary dark:text-dark-text-secondary">
                   {project.year}
                 </div>
-
                 <div className="col-span-1 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
                   <ArrowRight className="w-6 h-6 text-light-accent-blue dark:text-dark-accent-blue transform group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -95,7 +92,7 @@ const PortfolioPage: FC = () => {
           </AnimatedSection>
         ))}
 
-        {data?.results.length === 0 && (
+        {projects.length === 0 && (
           <div className="text-center py-12 text-light-text-secondary dark:text-dark-text-secondary">
             No projects found in this category
           </div>
@@ -105,7 +102,7 @@ const PortfolioPage: FC = () => {
       {/* Contact CTA */}
       <AnimatedSection>
         <div className="mt-20 py-12 text-center">
-          <Link 
+          <Link
             to="/contact"
             className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
           >

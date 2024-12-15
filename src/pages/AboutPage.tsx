@@ -44,7 +44,7 @@ const AboutPage: FC = () => {
     <main id="about-section" className="container mx-auto px-4 py-20">
       {/* Hero Section */}
       <AnimatedSection className="mb-32">
-        <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-12">
+      <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-12 text-light-text-primary dark:text-dark-text-heading">
           Crafting digital
           <br /> experiences with
           <br /> Nordic precision
@@ -69,7 +69,7 @@ const AboutPage: FC = () => {
                   <span className="text-sm text-light-text-muted dark:text-dark-text-muted">
                     0{index + 1}
                   </span>
-                  <h3 className="text-2xl font-light mt-2">{item.area}</h3>
+                  <h3 className="text-xl font-light text-light-text-primary dark:text-dark-text-heading">{item.area}</h3>
                 </div>
                 <div className="lg:col-span-9">
                   <p className="text-3xl font-light text-light-text-secondary dark:text-dark-text-secondary mb-4">
@@ -87,12 +87,12 @@ const AboutPage: FC = () => {
 
       {/* Values Section */}
       <AnimatedSection className="mb-32">
-        <h2 className="text-3xl font-light mb-16">Core Values</h2>
+      <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Core Values</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {values.map((value, index) => (
             <div key={index} className="space-y-4">
               <value.icon className="w-10 h-10 text-light-accent-blue dark:text-dark-accent-blue" />
-              <h3 className="text-xl font-light">{value.title}</h3>
+              <h3 className="text-xl font-light text-light-text-primary dark:text-dark-text-heading">{value.title}</h3>
               <p className="text-light-text-secondary dark:text-dark-text-secondary">
                 {value.description}
               </p>
@@ -104,7 +104,7 @@ const AboutPage: FC = () => {
       {/* CTA Section */}
       <AnimatedSection>
         <div className="flex flex-col items-center text-center">
-          <h2 className="text-3xl font-light mb-6">Ready to start your project?</h2>
+          <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Ready to start your project?</h2>
           <p className="text-light-text-secondary dark:text-dark-text-secondary mb-8 max-w-2xl">
             Let's discuss how we can bring your ideas to life with modern web development 
             solutions tailored to your needs.
