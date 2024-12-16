@@ -190,7 +190,7 @@ const Header: FC<HeaderProps> = ({ currentSection }) => {
       <aside
         ref={sidebarRef}
         id="main-menu"
-        className="fixed top-4 right-0 w-[calc(100vw-2rem)] max-w-[20rem] h-[calc(100vh-2rem)] bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 shadow-2xl rounded-l-[3rem] overflow-hidden backdrop-blur-lg border-l border-y border-white/20 dark:border-white/10"
+        className="fixed top-4 right-0 w-[calc(70vw-1rem)] max-w-[20rem] h-[calc(60vh-2rem)] bg-light-bg-primary/95 dark:bg-dark-bg-primary/95 shadow-2xl rounded-l-[3rem] overflow-hidden backdrop-blur-lg border-l border-y border-white/20 dark:border-white/10"
         aria-label="Main Navigation"
       >
         {/* Glass effect */}

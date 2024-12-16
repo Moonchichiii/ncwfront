@@ -192,9 +192,6 @@ const ContactPage: FC = () => {
         {/* Project Types Section */}
         <AnimatedSection className="space-y-16">
           <div className="space-y-12 max-w-xl">
-            <h2 className="text-3xl font-light text-light-text-primary dark:text-dark-text-heading">
-              Project Types
-            </h2>
             
             <div className="space-y-12">
               {projectTypes.map((type, index) => (

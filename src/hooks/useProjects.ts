@@ -8,8 +8,8 @@ interface Project {
   services: string;
   year: string;
   description: string;
+  category: string;
   link: string;
-  tags: string[];
   featured: boolean;
   image?: string;
   external_link?: string;
@@ -26,6 +26,7 @@ interface UseProjectsOptions {
 
 const fetchProjects = async (options: UseProjectsOptions = {}): Promise<ProjectsResponse> => {
   const params = new URLSearchParams();
+  
   if (options.category) params.append('category', options.category);
   if (options.featured) params.append('featured', 'true');
   

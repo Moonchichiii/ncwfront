@@ -3,6 +3,7 @@ import { X, MinusCircle, Send } from 'lucide-react';
 import { gsap } from 'gsap';
 import apiClient from '@api/config';
 import chatbotImage from '@assets/images/chatbot.webp';
+import { parseClassName } from 'node_modules/react-toastify/dist/utils';
 
 interface ChatAssistantProps {
     show: boolean;
@@ -19,41 +20,53 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [showTooltip, setShowTooltip] = useState(false);
     const chatRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    // Enhanced hover animation
+    // Enhanced hover animation with smooth loading
     useEffect(() => {
         if (!buttonRef.current) return;
         
-        // Initial pulse animation
-        gsap.fromTo(
-            buttonRef.current,
-            { scale: 1 },
-            { 
-                scale: 1.05, 
-                duration: 1.2, 
-                repeat: -1, 
-                yoyo: true, 
-                ease: "elastic.out(1, 0.3)" 
-            }
-        );
+        // Initial state
+        gsap.set(buttonRef.current, { rotation: 0, scale: 1 });
+        
+        // Delayed start of wobble animation
+        const wobbleAnimation = gsap.to(buttonRef.current, {
+            rotation: 3,
+            duration: 1,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            paused: true // Start paused
+        });
+        
+        // Start the animation after a small delay
+        setTimeout(() => {
+            wobbleAnimation.play();
+        }, 500);
 
         // Hover effect
         buttonRef.current.addEventListener('mouseenter', () => {
+            wobbleAnimation.pause();
+            setShowTooltip(true);
             gsap.to(buttonRef.current, {
-                scale: 1.15,
+                scale: 1.1,
+                rotation: 0,
                 duration: 0.3,
-                ease: "back.out(1.7)"
+                ease: "power2.out"
             });
         });
 
         buttonRef.current.addEventListener('mouseleave', () => {
+            setShowTooltip(false);
             gsap.to(buttonRef.current, {
                 scale: 1,
+                rotation: 0,
                 duration: 0.3,
-                ease: "power2.out"
+                ease: "power2.out",
+                onComplete: () => wobbleAnimation.play()
             });
         });
     }, []);
@@ -88,20 +101,37 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
     return (
         <div 
             ref={chatRef} 
-            className={`fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[9999] transition-all duration-500 ease-in-out 
+            className={`fixed sm:bottom-6 sm:right-6 bottom-4 right-2 z-[9999] transition-all duration-500 ease-in-out 
                 ${isOpen ? 'w-[90vw] sm:w-[400px] h-auto' : 'w-16 h-16'}`}
         >
             {!isOpen ? (
-                <button 
-                    ref={buttonRef}
-                    onClick={() => setIsOpen(true)} 
-                    className="w-16 h-16 rounded-full bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
-                        dark:from-dark-accent-blue dark:to-dark-accent-purple shadow-2xl flex items-center justify-center 
-                        transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm"
-                    aria-label="Open chat assistant"
-                >
-                    <img src={chatbotImage} alt="" className="w-20 h-15 object-contain" />
-                </button>
+                <div className="relative">
+                    <button 
+                        ref={buttonRef}
+                        onClick={() => setIsOpen(true)} 
+                        className="w-16 h-16 rounded-full bg-transparent 
+                            dark:from-dark-accent-blue dark:to-dark-accent-purple flex items-center justify-center 
+                            transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm"
+                        aria-label="Open chat assistant"
+                    >
+                        <img src={chatbotImage} alt="" className="w-20 h-15 object-contain" />
+                    </button>
+                    {showTooltip && (
+                        <div className="absolute -top-20 right-0 
+                            bg-white dark:bg-dark-bg-primary 
+                            p-3 rounded-2xl shadow-lg text-sm
+                            border border-light-text-primary/10 dark:border-dark-text-primary/10
+                            flex flex-col items-center gap-1 min-w-[130px]">
+                            <span>Hello!</span>
+                            <span>Can I help you? 😊</span>
+                            <div className="absolute -bottom-2 right-6 w-4 h-4 
+                                bg-white dark:bg-dark-bg-primary 
+                                rotate-45 border-r border-b 
+                                border-light-text-primary/10 dark:border-dark-text-primary/10">
+                            </div>
+                        </div>
+                    )}
+                </div>
             ) : (
                 <div className="bg-light-bg-secondary/95 dark:bg-dark-bg-secondary/95 backdrop-blur-md rounded-3xl 
                     shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden border border-light-text-primary/5 
@@ -152,37 +182,37 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
 
                     {/* Input Form */}
                     <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-light-text-primary/5 dark:border-dark-text-primary/5">
-                    <div className="flex items-center gap-2 sm:gap-3">
-                        <input 
-                            type="text" 
-                            value={message} 
-                            onChange={(e) => setMessage(e.target.value)} 
-                            className="flex-1 bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 
-                                text-light-text-primary dark:text-dark-text-primary 
-                                text-sm sm:text-base
-                                rounded-full px-4 sm:px-6 py-2.5 sm:py-3
-                                focus:outline-none focus:ring-2 focus:ring-light-accent-blue dark:focus:ring-dark-accent-blue
-                                placeholder:text-light-text-muted dark:placeholder:text-dark-text-muted
-                                placeholder:text-sm sm:placeholder:text-base
-                                min-w-0 w-full"
-                            placeholder="Type your message..."
-                        />
-                        <button 
-                            type="submit" 
-                            disabled={isLoading}
-                            className="shrink-0 bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
-                                dark:from-dark-accent-blue dark:to-dark-accent-purple text-white 
-                                p-2.5 sm:p-3
-                                rounded-full hover:shadow-lg transition-all duration-300 
-                                disabled:opacity-50 disabled:cursor-not-allowed
-                                hover:scale-105 active:scale-95
-                                flex items-center justify-center"
-                            aria-label="Send message"
-                        >
-                            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-                        </button>
-                    </div>
-                </form>
+                        <div className="flex items-center gap-2 sm:gap-3">
+                            <input 
+                                type="text" 
+                                value={message} 
+                                onChange={(e) => setMessage(e.target.value)} 
+                                className="flex-1 bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 
+                                    text-light-text-primary dark:text-dark-text-primary 
+                                    text-sm sm:text-base
+                                    rounded-full px-4 sm:px-6 py-2.5 sm:py-3
+                                    focus:outline-none focus:ring-2 focus:ring-light-accent-blue dark:focus:ring-dark-accent-blue
+                                    placeholder:text-light-text-muted dark:placeholder:text-dark-text-muted
+                                    placeholder:text-sm sm:placeholder:text-base
+                                    min-w-0 w-full"
+                                placeholder="Type your message..."
+                            />
+                            <button 
+                                type="submit" 
+                                disabled={isLoading}
+                                className="shrink-0 bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
+                                    dark:from-dark-accent-blue dark:to-dark-accent-purple text-white 
+                                    p-2.5 sm:p-3
+                                    rounded-full hover:shadow-lg transition-all duration-300 
+                                    disabled:opacity-50 disabled:cursor-not-allowed
+                                    hover:scale-105 active:scale-95
+                                    flex items-center justify-center"
+                                aria-label="Send message"
+                            >
+                                <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                            </button>
+                        </div>
+                    </form>
                 </div>
             )}
         </div>

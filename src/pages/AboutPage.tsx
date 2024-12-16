@@ -86,7 +86,7 @@ const AboutPage: FC = () => {
       </AnimatedSection>
 
       {/* Values Section */}
-      <AnimatedSection className="mb-32">
+      <AnimatedSection className="mb-20">
       <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Core Values</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
           {values.map((value, index) => (

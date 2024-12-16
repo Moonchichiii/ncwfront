@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { gsap } from '@/lib/gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Header from '@components/layout/Header';
@@ -12,48 +12,85 @@ import ChatAssistant from '@components/assistant/ChatAssistant';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Constants to avoid magic numbers
+const SCROLL_THRESHOLD = 150;
+const DEBOUNCE_DELAY = 100;
+const SCROLL_ANIMATION_DURATION = 1;
+const INDICATOR_ANIMATION_DURATION = 0.3;
+
+const PAGES = [LandingPage, AboutPage, PortfolioPage, ContactPage] as const;
+
+interface ScrollState {
+  currentSection: number;
+  showUI: boolean;
+  showFooter: boolean;
+  showChatAssistant: boolean;
+}
+
 const ScrollContainer: React.FC = () => {
+  // Combined state object to reduce re-renders
+  const [scrollState, setScrollState] = useState<ScrollState>({
+    currentSection: 0,
+    showUI: true,
+    showFooter: false,
+    showChatAssistant: false,
+  });
+
+  // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const sectionsRef = useRef<HTMLDivElement[]>([]);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-  const [currentSection, setCurrentSection] = useState(0);
-  const [showUI, setShowUI] = useState(true);
-  const [showFooter, setShowFooter] = useState(false);
-  const [showChatAssistant, setShowChatAssistant] = useState(false);
-  let debounceTimeout: NodeJS.Timeout | null = null;
+  const debounceRef = useRef<NodeJS.Timeout>();
+  const lastScrollTimeRef = useRef<number>(0);
 
-  // Handle scroll indicator animations separately
+  // Memoized scroll trigger configuration
+  const scrollTriggerConfig = useMemo(() => ({
+    limitCallbacks: true,
+    syncInterval: 50,
+  }), []);
+
+  // Optimized state update function
+  const updateScrollState = useCallback((index: number) => {
+    const now = Date.now();
+    if (now - lastScrollTimeRef.current > SCROLL_THRESHOLD) {
+      lastScrollTimeRef.current = now;
+
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+
+      // Update all related states at once
+      setScrollState(prev => ({
+        currentSection: index,
+        showUI: index !== 0,
+        showFooter: index === PAGES.length - 1,
+        showChatAssistant: index !== 0,
+      }));
+    }
+  }, []);
+
+  // Scroll indicator animation effect
   useEffect(() => {
     if (!scrollIndicatorRef.current) return;
 
     const ctx = gsap.context(() => {
-      if (currentSection === 0) {
-        gsap.to(scrollIndicatorRef.current, {
-          opacity: 1,
-          duration: 0.3,
-          ease: 'power2.out',
-          pointerEvents: 'auto'
-        });
-      } else {
-        gsap.to(scrollIndicatorRef.current, {
-          opacity: 0,
-          duration: 0.3,
-          ease: 'power2.out',
-          pointerEvents: 'none'
-        });
-      }
+      gsap.to(scrollIndicatorRef.current, {
+        opacity: scrollState.currentSection === 0 ? 1 : 0,
+        duration: INDICATOR_ANIMATION_DURATION,
+        ease: 'power2.out',
+        pointerEvents: scrollState.currentSection === 0 ? 'auto' : 'none'
+      });
     });
 
     return () => ctx.revert();
-  }, [currentSection]);
+  }, [scrollState.currentSection]);
 
+  // Scroll triggers setup
   useEffect(() => {
     if (!containerRef.current) return;
 
     const sections = sectionsRef.current;
     const scrollTriggers: gsap.ScrollTrigger[] = [];
-    let lastScrollTime = 0;
-    const scrollThreshold = 150;
 
     const ctx = gsap.context(() => {
       sections.forEach((section, index) => {
@@ -61,125 +98,91 @@ const ScrollContainer: React.FC = () => {
           trigger: section,
           start: 'top 50%',
           end: 'bottom 50%',
-          onEnter: () => {
-            const now = Date.now();
-            if (now - lastScrollTime > scrollThreshold) {
-              setCurrentSection(index);
-              lastScrollTime = now;
-
-              // Set UI visibility logic
-              setShowUI(index !== 0);
-              setShowFooter(index === sections.length - 1);
-
-              // Set ChatAssistant visibility (debounced to avoid rapid state changes)
-              if (debounceTimeout) clearTimeout(debounceTimeout);
-              debounceTimeout = setTimeout(() => {
-                setShowChatAssistant(index !== 0);
-              }, 100); // Wait for 100ms before toggling
-            }
-          },
-          onEnterBack: () => {
-            const now = Date.now();
-            if (now - lastScrollTime > scrollThreshold) {
-              setCurrentSection(index);
-              lastScrollTime = now;
-
-              // Set UI visibility logic
-              setShowUI(index !== 0);
-              setShowFooter(index === sections.length - 1);
-
-              // Set ChatAssistant visibility (debounced to avoid rapid state changes)
-              if (debounceTimeout) clearTimeout(debounceTimeout);
-              debounceTimeout = setTimeout(() => {
-                setShowChatAssistant(index !== 0);
-              }, 100); // Wait for 100ms before toggling
-            }
-          },
+          onEnter: () => updateScrollState(index),
+          onEnterBack: () => updateScrollState(index),
         });
         scrollTriggers.push(trigger);
       });
 
-      ScrollTrigger.config({
-        limitCallbacks: true,
-        syncInterval: 50,
-      });
+      ScrollTrigger.config(scrollTriggerConfig);
     }, containerRef);
 
     return () => {
       scrollTriggers.forEach(trigger => trigger.kill());
       ctx.revert();
-      if (debounceTimeout) clearTimeout(debounceTimeout); // Clear debounce on cleanup
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
     };
-  }, []);
+  }, [updateScrollState, scrollTriggerConfig]);
 
-  const handleScroll = (index: number) => {
+  // Optimized scroll handler
+  const handleScroll = useCallback((index: number) => {
     const target = sectionsRef.current[index];
     if (!target) return;
 
     gsap.to(window, {
-      duration: 1,
+      duration: SCROLL_ANIMATION_DURATION,
       scrollTo: {
         y: target,
         autoKill: false,
       },
       ease: 'power3.inOut',
     });
-  };
+  }, []);
+
+  // Memoized keyboard handler
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      handleScroll(Math.min(scrollState.currentSection + 1, PAGES.length - 1));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      handleScroll(Math.max(scrollState.currentSection - 1, 0));
+    }
+  }, [scrollState.currentSection, handleScroll]);
 
   return (
     <div ref={containerRef} className="relative bg-light-bg-primary dark:bg-dark-bg-primary">
       <Header 
-        currentSection={currentSection} 
-        showUI={showUI}
+        currentSection={scrollState.currentSection} 
+        showUI={scrollState.showUI}
       />
       
-      {/* Sections */}
-      {[LandingPage, AboutPage, PortfolioPage, ContactPage].map((Page, index) => (
+      {PAGES.map((Page, index) => (
         <div
           key={index}
-          ref={el => {
-            if (el) sectionsRef.current[index] = el;
-          }}
+          ref={el => el && (sectionsRef.current[index] = el)}
           className="min-h-screen"
         >
-          <Page currentSection={currentSection} />
+          <Page currentSection={scrollState.currentSection} />
         </div>
       ))}
 
-      {/* Hidden Scroll Index */}
       <div 
         ref={scrollIndicatorRef}
         className="fixed left-0 top-0 w-0 h-0 overflow-hidden"
         aria-hidden="true"
       >
-        {[0, 1, 2, 3].map((index) => (
+        {Array.from({ length: PAGES.length }, (_, i) => (
           <div
-            key={index}
-            data-section={index}
+            key={i}
+            data-section={i}
             className="scroll-section-marker"
           />
         ))}
       </div>
 
-      {/* Keyboard Navigation Handler */}
       <div 
         className="sr-only"
-        onKeyDown={(e) => {
-          if (e.key === 'ArrowDown') {
-            e.preventDefault();
-            handleScroll(Math.min(currentSection + 1, 3));
-          } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            handleScroll(Math.max(currentSection - 1, 0));
-          }
-        }}
+        onKeyDown={handleKeyDown}
         tabIndex={0}
         role="application"
         aria-label="Section Navigation"
       />
 
-      <ChatAssistant show={showChatAssistant} />
-      {showFooter && <Footer />}
+      <ChatAssistant show={scrollState.showChatAssistant} />
+      {scrollState.showFooter && <Footer />}
       <CookieConsent />
     </div>
   );
