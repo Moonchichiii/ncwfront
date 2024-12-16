@@ -1,8 +1,9 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import ThemeToggle from '@components/common/ThemeToggle';
 import { gsap } from 'gsap';
 import { Menu, X } from 'lucide-react';
+import { useContext } from 'react';
+import { ScrollContext } from '../scroll/ScrollContainer';
 
 interface HeaderProps {
   currentSection: number;
@@ -15,6 +16,7 @@ const Header: FC<HeaderProps> = ({ currentSection }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const navLinksRef = useRef<(HTMLAnchorElement | null)[]>([]);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const { scrollToSection } = useContext(ScrollContext);
 
   const isLandingPage = currentSection === 0;
 
@@ -215,20 +217,14 @@ const Header: FC<HeaderProps> = ({ currentSection }) => {
         <nav className="relative h-full flex flex-col pt-20 px-8">
           <div className="flex-1 space-y-6">
             {[
-              { to: '/', label: 'Home' },
-              { to: '/about', label: 'About' },
-              { to: '/portfolio', label: 'Portfolio' },
-              { to: '/contact', label: 'Contact' },
-            ].map(({ to, label }, index) => (
-              <Link
-                key={to}
-                ref={el => navLinksRef.current[index] = el}
-                to={to}
-                onClick={toggleMenu}
-                className="block text-xl sm:text-2xl font-light text-light-text-primary dark:text-dark-text-primary hover:text-light-accent-blue dark:hover:text-dark-accent-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-light-accent-blue dark:focus-visible:ring-dark-accent-blue rounded-lg p-2 transition-colors"
-              >
+              { id: 'landing-section', label: 'Home' },
+              { id: 'about-section', label: 'About' },
+              { id: 'portfolio-section', label: 'Portfolio' },
+              { id: 'contact-section', label: 'Contact' },
+            ].map(({ id, label }) => (
+              <button key={id} onClick={() => scrollToSection(id)} className="nav-link block text-xl sm:text-2xl font-light text-light-text-primary dark:text-dark-text-primary hover:text-light-accent-blue dark:hover:text-dark-accent-blue focus:outline-none focus-visible:ring-2 focus-visible:ring-light-accent-blue dark:focus-visible:ring-dark-accent-blue rounded-lg p-2 transition-colors">
                 {label}
-              </Link>
+              </button>
             ))}
           </div>
         </nav>

@@ -118,7 +118,7 @@ const AnimatedLogo: FC<AnimatedLogoProps> = ({ className = '' }) => {
       const hoverTl = gsap.timeline({ paused: true });
       hoverTl
         .to(nordicText.chars, {
-          y: -5,
+          y: -5, 
           duration: 0.4,
           stagger: {
             each: 0.02,
@@ -128,7 +128,7 @@ const AnimatedLogo: FC<AnimatedLogoProps> = ({ className = '' }) => {
         })
         .to(codeText.chars, {
           y: 5,
-          duration: 0.4,
+          duration: 0.4, 
           stagger: {
             each: 0.02,
             from: "center",

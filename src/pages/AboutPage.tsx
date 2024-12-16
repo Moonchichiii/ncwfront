@@ -1,9 +1,13 @@
 import { FC } from 'react';
 import AnimatedSection from '@/components/animation/AnimatedSection';
 import { Code2, Boxes, Rocket, Terminal, Server, Cpu } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useContext } from 'react';
+import { ScrollContext } from '@/components/scroll/ScrollContainer';
+
 
 const AboutPage: FC = () => {
+  const { scrollToSection } = useContext(ScrollContext);  
+  
   const expertise = [
     {
       area: "Frontend Development",
@@ -39,6 +43,8 @@ const AboutPage: FC = () => {
       description: "End-to-end development from frontend to backend"
     }
   ];
+  
+  
 
   return (
     <main id="about-section" className="container mx-auto px-4 py-20">
@@ -109,13 +115,13 @@ const AboutPage: FC = () => {
             Let's discuss how we can bring your ideas to life with modern web development 
             solutions tailored to your needs.
           </p>
-          <Link 
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
-          >
-            Start a Conversation
-            <Rocket className="w-4 h-4" />
-          </Link>
+          <button 
+          onClick={() => scrollToSection('contact-section')}
+          className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
+        >
+          Start a Conversation
+          <Rocket className="w-4 h-4" />
+        </button>
         </div>
       </AnimatedSection>
     </main>

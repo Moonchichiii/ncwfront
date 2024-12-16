@@ -3,7 +3,6 @@ import { X, MinusCircle, Send } from 'lucide-react';
 import { gsap } from 'gsap';
 import apiClient from '@api/config';
 import chatbotImage from '@assets/images/chatbot.webp';
-import { parseClassName } from 'node_modules/react-toastify/dist/utils';
 
 interface ChatAssistantProps {
     show: boolean;
@@ -21,34 +20,31 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [showTooltip, setShowTooltip] = useState(false);
+    
     const chatRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    // Enhanced hover animation with smooth loading
+    // Button animation effect
     useEffect(() => {
         if (!buttonRef.current) return;
         
-        // Initial state
         gsap.set(buttonRef.current, { rotation: 0, scale: 1 });
         
-        // Delayed start of wobble animation
         const wobbleAnimation = gsap.to(buttonRef.current, {
             rotation: 3,
             duration: 1,
             repeat: -1,
             yoyo: true,
             ease: "sine.inOut",
-            paused: true // Start paused
+            paused: true
         });
         
-        // Start the animation after a small delay
         setTimeout(() => {
             wobbleAnimation.play();
         }, 500);
 
-        // Hover effect
-        buttonRef.current.addEventListener('mouseenter', () => {
+        const handleMouseEnter = () => {
             wobbleAnimation.pause();
             setShowTooltip(true);
             gsap.to(buttonRef.current, {
@@ -57,9 +53,9 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
                 duration: 0.3,
                 ease: "power2.out"
             });
-        });
+        };
 
-        buttonRef.current.addEventListener('mouseleave', () => {
+        const handleMouseLeave = () => {
             setShowTooltip(false);
             gsap.to(buttonRef.current, {
                 scale: 1,
@@ -68,14 +64,36 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
                 ease: "power2.out",
                 onComplete: () => wobbleAnimation.play()
             });
-        });
+        };
+
+        buttonRef.current.addEventListener('mouseenter', handleMouseEnter);
+        buttonRef.current.addEventListener('mouseleave', handleMouseLeave);
+
+        return () => {
+            if (buttonRef.current) {
+                buttonRef.current.removeEventListener('mouseenter', handleMouseEnter);
+                buttonRef.current.removeEventListener('mouseleave', handleMouseLeave);
+            }
+            wobbleAnimation.kill();
+        };
     }, []);
 
+    // Scroll to bottom effect
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
+
+    // Chat open event listener
+    useEffect(() => {
+        const handleOpenChat = () => {
+            setIsOpen(true);
+        };
+    
+        window.addEventListener('openChat', handleOpenChat);
+        return () => window.removeEventListener('openChat', handleOpenChat);
+    }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

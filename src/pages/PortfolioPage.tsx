@@ -3,10 +3,16 @@ import AnimatedSection from '@/components/animation/AnimatedSection';
 import { Link } from 'react-router-dom';
 import { ExternalLink, ArrowRight } from 'lucide-react';
 import useProjects from '@/hooks/useProjects';
+import { useContext } from 'react';
+import { ScrollContext } from '../components/scroll/ScrollContainer';
+
 
 const PortfolioPage: FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const { data, isLoading, error } = useProjects({ category: selectedCategory });
+  const { scrollToSection } = useContext(ScrollContext);
+
+
 
   const categories = [
     { id: undefined, label: 'All' },
@@ -68,22 +74,22 @@ const PortfolioPage: FC = () => {
         {/* Column Headers */}
         <div className="grid grid-cols-12 items-center px-4 pb-4">
           <div className="col-span-12 md:col-span-3">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
               Client
             </h2>
           </div>
           <div className="hidden md:block md:col-span-3">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
               Location
             </h2>
           </div>
           <div className="hidden md:block md:col-span-4">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
               Services
             </h2>
           </div>
           <div className="hidden md:block md:col-span-2">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
+            <h2 className="text-xs font-medium uppercase tracking-wider text-light-text-secondary dark:text-dark-text-secondary">
               Year
             </h2>
           </div>
@@ -127,13 +133,13 @@ const PortfolioPage: FC = () => {
 
       <AnimatedSection>
         <div className="mt-20 py-12 text-center">
-          <Link
-            to="/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
-          >
-            Start a Project
-            <ExternalLink className="w-4 h-4" />
-          </Link>
+        <button 
+        onClick={() => scrollToSection('contact-section')}
+        className="inline-flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
+      >
+        Start a Project
+        <ExternalLink className="w-4 h-4" />
+      </button>
         </div>
       </AnimatedSection>
     </main>
