@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import emailjs from '@emailjs/browser';
-import { Mail, ArrowRight, ChevronDown } from 'lucide-react';
+import { Mail, ArrowRight, Rocket, Code, Database, Globe } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 // Schema and Types
@@ -12,93 +12,33 @@ const contactSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Invalid email address'),
   organization: z.string().optional(),
-  services: z.array(z.string()).min(1, 'Please select at least one service'),
   message: z.string().min(1, 'Message is required'),
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-// Constants
-const services = [
-  { id: 'webApp', label: 'Web Application' },
-  { id: 'ecommerce', label: 'E-commerce' },
-  { id: 'webapp', label: 'Web Development' },
-  { id: 'fullstack', label: 'Full Stack Solution' },
-];
-
-const pricingGuide = [
+// Project Types Information
+const projectTypes = [
   {
-    type: 'Basic Website',
-    range: '€150 - €300',
-    duration: '1-2 weeks',
-    includes: ['Landing Page', 'Contact Form', 'Basic SEO', 'Mobile Responsive']
+    icon: Globe,
+    title: "Web Solutions",
+    description: "Modern, responsive websites and progressive web applications designed for optimal user experience.",
+    features: ["Single Page Applications", "Progressive Web Apps", "Business Websites", "Portfolio Sites"]
   },
   {
-    type: 'Advanced Website',
-    range: '€300 - €700',
-    duration: '1-2 months',
-    includes: ['Multiple Pages', 'CMS Integration', 'Advanced SEO', 'Performance Optimization']
+    icon: Code,
+    title: "Custom Development",
+    description: "Tailored software solutions built with cutting-edge technologies to meet your specific needs.",
+    features: ["Full Stack Applications", "API Development", "E-commerce Solutions", "CMS Integration"]
   },
   {
-    type: 'Full Stack Application',
-    range: '€700 - €1200',
-    duration: '1-2 months',
-    includes: ['Custom Backend', 'Database', 'User Authentication', 'API Integration']
+    icon: Database,
+    title: "System Architecture",
+    description: "Robust and scalable system designs that form the backbone of your digital infrastructure.",
+    features: ["Database Design", "Cloud Solutions", "System Integration", "Performance Optimization"]
   }
 ];
 
-// PricingAccordion
-const PricingAccordion: FC<{ tier: typeof pricingGuide[0] }> = ({ tier }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  return (
-    <div className="border-b border-light-text-primary/10 dark:border-dark-text-primary/10 pb-4">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-start py-4 text-left group"
-      >
-        <div>
-        <h3 className="text-xl font-light text-light-text-primary dark:text-dark-text-heading group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue transition-colors">
-            {tier.type}
-          </h3>
-          <p className="text-light-accent-blue dark:text-dark-accent-blue font-medium mt-1">
-            {tier.range}
-          </p>
-        </div>
-        <ChevronDown 
-          className={`w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary transition-transform group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-blue ${
-            isOpen ? 'transform rotate-180' : ''
-          }`} 
-        />
-      </button>
-      
-      <div 
-        className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${
-          isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
-        }`}
-      >
-        <div className="overflow-hidden">
-          <p className="text-sm text-light-text-muted dark:text-dark-text-muted mb-4">
-            {tier.duration}
-          </p>
-          <ul className="space-y-2 pt-2">
-            {tier.includes.map((feature, index) => (
-              <li 
-                key={index}
-                className="text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-2"
-              >
-                <span className="w-1 h-1 rounded-full bg-light-accent-blue/50 dark:bg-dark-accent-blue/50" />
-                {feature}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Main Contact Component
 const ContactPage: FC = () => {
   const {
     register,
@@ -129,144 +69,189 @@ const ContactPage: FC = () => {
     <main className="container mx-auto px-4 py-20">
       {/* Hero Section */}
       <AnimatedSection className="mb-24">
-      <h1 className="text-5xl sm:text-6xl md:text-7xl font-light mb-8 text-light-text-primary dark:text-dark-text-heading">
-          Let's project <br />together
+      <h1 className="relative text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-light mb-8 text-light-text-primary dark:text-dark-text-heading leading-[1.1]">
+          <span className="block opacity-0 animate-[fadeInUp_0.5s_0.2s_forwards]">Let's start a</span>
+          <span className="block md:relative md:left-[10%] opacity-0 animate-[fadeInUp_0.5s_0.4s_forwards]">project</span>
+          <span className="block md:relative md:left-[20%] opacity-0 animate-[fadeInUp_0.5s_0.6s_forwards]">together</span>
         </h1>
         <p className="text-xl text-light-text-secondary dark:text-dark-text-secondary max-w-2xl">
           Have a project in mind? I'm ready to help bring your ideas to life with professional 
-          full-stack development solutions at competitive rates.
+          full-stack development solutions.
         </p>
       </AnimatedSection>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
         {/* Contact Form */}
         <AnimatedSection>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-12">
-            {/* Numbered form fields */}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-12 relative">
             <div className="space-y-12">
-              <div className="relative">
-                <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">01</span>
-                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's your name?</label>
+              {/* Form Fields */}
+              <div className="group relative">
+                <label className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted transition-colors 
+                  group-focus-within:text-light-accent-blue dark:group-focus-within:text-dark-accent-yellow">
+                  01 — What's your name?
+                </label>
                 <input
                   type="text"
                   {...register('name')}
-                  className="w-full bg-transparent border-b border-light-text-primary/20 dark:border-dark-text-primary/20 py-3 focus:outline-none focus:border-light-accent-blue dark:focus:border-dark-accent-blue transition-colors"
-                  placeholder="John Doe *"
+                  className="w-full mt-2 bg-transparent border-0 border-b-[3px] border-light-text-primary/10 
+                    dark:border-dark-text-primary/10 py-3 px-0
+                    focus:outline-none focus:ring-0 focus:border-light-accent-blue dark:focus:border-dark-accent-yellow 
+                    text-2xl font-light text-light-text-primary dark:text-dark-text-heading transition-all
+                    placeholder-light-text-primary/20 dark:placeholder-dark-text-primary/20"
+                  placeholder="John Doe"
                 />
-                {errors.name && <p className="mt-2 text-sm text-red-500">{errors.name.message}</p>}
+                {errors.name && (
+                  <p className="absolute -bottom-6 left-0 text-sm text-status-error">
+                    {errors.name.message}
+                  </p>
+                )}
               </div>
 
-              <div className="relative">
-                <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">02</span>
-                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's your email?</label>
+              <div className="group relative">
+                <label className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted transition-colors 
+                  group-focus-within:text-light-accent-blue dark:group-focus-within:text-dark-accent-yellow">
+                  02 — What's your email?
+                </label>
                 <input
                   type="email"
                   {...register('email')}
-                  className="w-full bg-transparent border-b border-light-text-primary/20 dark:border-dark-text-primary/20 py-3 focus:outline-none focus:border-light-accent-blue dark:focus:border-dark-accent-blue transition-colors"
-                  placeholder="john@doe.com *"
+                  className="w-full mt-2 bg-transparent border-0 border-b-[3px] border-light-text-primary/10 
+                    dark:border-dark-text-primary/10 py-3 px-0
+                    focus:outline-none focus:ring-0 focus:border-light-accent-blue dark:focus:border-dark-accent-yellow 
+                    text-2xl font-light text-light-text-primary dark:text-dark-text-heading transition-all
+                    placeholder-light-text-primary/20 dark:placeholder-dark-text-primary/20"
+                  placeholder="john@example.com"
                 />
-                {errors.email && <p className="mt-2 text-sm text-red-500">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="absolute -bottom-6 left-0 text-sm text-status-error">
+                    {errors.email.message}
+                  </p>
+                )}
               </div>
 
-              <div className="relative">
-                <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">03</span>
-                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">What's the name of your organization?</label>
+              <div className="group relative">
+                <label className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted transition-colors 
+                  group-focus-within:text-light-accent-blue dark:group-focus-within:text-dark-accent-yellow">
+                  03 — Organization (optional)
+                </label>
                 <input
                   type="text"
                   {...register('organization')}
-                  className="w-full bg-transparent border-b border-light-text-primary/20 dark:border-dark-text-primary/20 py-3 focus:outline-none focus:border-light-accent-blue dark:focus:border-dark-accent-blue transition-colors"
-                  placeholder="John & Doe ®"
+                  className="w-full mt-2 bg-transparent border-0 border-b-[3px] border-light-text-primary/10 
+                    dark:border-dark-text-primary/10 py-3 px-0
+                    focus:outline-none focus:ring-0 focus:border-light-accent-blue dark:focus:border-dark-accent-yellow 
+                    text-2xl font-light text-light-text-primary dark:text-dark-text-heading transition-all
+                    placeholder-light-text-primary/20 dark:placeholder-dark-text-primary/20"
+                  placeholder="Company name"
                 />
               </div>
 
-              <div className="relative">
-                <span className="text-sm text-light-text-muted dark:text-dark-text-muted absolute -top-6 left-0">04</span>
-                <label className="text-2xl font-light mb-4 block text-light-text-primary dark:text-dark-text-heading">Your message</label>
+              <div className="group relative">
+                <label className="text-sm font-medium text-light-text-muted dark:text-dark-text-muted transition-colors 
+                  group-focus-within:text-light-accent-blue dark:group-focus-within:text-dark-accent-yellow">
+                  04 — Tell me about your project
+                </label>
                 <textarea
                   {...register('message')}
-                  className="w-full bg-transparent border-b border-light-text-primary/20 dark:border-dark-text-primary/20 py-3 focus:outline-none focus:border-light-accent-blue dark:focus:border-dark-accent-blue transition-colors resize-none"
-                  placeholder="Hello Mats, can you help me with... *"
+                  className="w-full mt-2 bg-transparent border-0 border-b-[3px] border-light-text-primary/10 
+                    dark:border-dark-text-primary/10 py-3 px-0
+                    focus:outline-none focus:ring-0 focus:border-light-accent-blue dark:focus:border-dark-accent-yellow 
+                    text-2xl font-light text-light-text-primary dark:text-dark-text-heading transition-all resize-none
+                    placeholder-light-text-primary/20 dark:placeholder-dark-text-primary/20"
+                  placeholder="I need help with..."
                   rows={4}
                 />
-                {errors.message && <p className="mt-2 text-sm text-red-500">{errors.message.message}</p>}
+                {errors.message && (
+                  <p className="absolute -bottom-6 left-0 text-sm text-status-error">
+                    {errors.message.message}
+                  </p>
+                )}
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors"
-            >
-              {isSubmitting ? 'Sending...' : 'Send Message'}
-              <ArrowRight className="w-5 h-5" />
-            </button>
+
+<button
+  type="submit"
+  disabled={isSubmitting}
+  aria-label="Send Message"
+  className="group flex items-center gap-2 px-8 py-4 bg-light-accent-blue dark:bg-dark-accent-blue text-white 
+    rounded-full hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-all duration-300 
+    disabled:opacity-50 relative overflow-hidden"
+>
+  <span className="relative z-10">
+    {isSubmitting ? 'Sending...' : 'Send Message'}
+  </span>
+  <ArrowRight className="w-5 h-5 relative z-10 group-hover:translate-x-1 transition-transform" />
+  <div className="absolute inset-0 bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
+    dark:from-dark-accent-blue dark:to-dark-accent-purple opacity-0 group-hover:opacity-100 transition-opacity" />
+</button>
           </form>
         </AnimatedSection>
 
-     {/* Pricing Guide */}
-     <AnimatedSection className="space-y-12">
-     <div className="space-y-8">
-     <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Pricing Guide</h2>
-       
-       {/* Mobile Pricing */}
-       <div className="lg:hidden">
-         {pricingGuide.map((tier) => (
-           <PricingAccordion key={tier.type} tier={tier} />
-         ))}
-       </div>
-       
-       {/* Desktop Pricing */}
-       <div className="hidden lg:block space-y-8">
-         {pricingGuide.map((tier) => (
-           <div 
-             key={tier.type} 
-             className="border-b border-light-text-primary/10 dark:border-dark-text-primary/10 pb-8"
-           >
-             <div className="flex justify-between items-start mb-4">
-               <h3 className="text-xl font-light">{tier.type}</h3>
-               <div className="text-right">
-                 <p className="text-light-accent-blue dark:text-dark-accent-blue font-medium">
-                   {tier.range}
-                 </p>
-                 <p className="text-sm text-light-text-muted dark:text-dark-text-muted">
-                   {tier.duration}
-                 </p>
-               </div>
-             </div>
-             <ul className="space-y-2">
-               {tier.includes.map((feature, index) => (
-                 <li 
-                   key={index}
-                   className="text-light-text-secondary dark:text-dark-text-secondary flex items-center gap-2"
-                 >
-                   <span className="w-1 h-1 rounded-full bg-light-accent-blue/50 dark:bg-dark-accent-blue/50" />
-                   {feature}
-                 </li>
-               ))}
-             </ul>
-           </div>
-         ))}
-       </div>
-     </div>
+        {/* Project Types Section */}
+        <AnimatedSection className="space-y-16">
+          <div className="space-y-12 max-w-xl">
+            <h2 className="text-3xl font-light text-light-text-primary dark:text-dark-text-heading">
+              Project Types
+            </h2>
+            
+            <div className="space-y-12">
+              {projectTypes.map((type, index) => (
+                <div key={index} className="group">
+                  <div className="flex flex-col space-y-3">
+                    <div className="flex items-center gap-4">
+                      <type.icon className="w-8 h-8 text-light-accent-blue dark:text-dark-accent-yellow 
+                        group-hover:text-light-accent-purple dark:group-hover:text-dark-accent-purple transition-all duration-300" />
+                      <h3 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">
+                        {type.title}
+                      </h3>
+                    </div>
+                    
+                    <p className="text-light-text-secondary dark:text-dark-text-secondary pl-12 text-base leading-relaxed">
+                      {type.description}
+                    </p>
+                    
+                    <div className="pl-12 grid grid-cols-2 gap-2">
+                      {type.features.map((feature, i) => (
+                        <span 
+                          key={i} 
+                          className="text-sm text-light-text-muted dark:text-dark-text-muted
+                            group-hover:text-light-accent-blue dark:group-hover:text-dark-accent-yellow 
+                            transition-colors duration-300"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
 
-     {/* Direct Contact */}
-     <div className="pt-8">
-     <h2 className="text-2xl font-light text-light-text-primary dark:text-dark-text-heading">Direct Contact</h2>
-       <a 
-         href="mailto:contact@nordiccodeworks.com"
-         className="flex items-center gap-2 text-light-text-secondary dark:text-dark-text-secondary hover:text-light-accent-blue dark:hover:text-dark-accent-blue transition-colors"
-       >
-         <Mail className="w-5 h-5" />
-         contact@nordiccodeworks.com
-       </a>
-       <p className="mt-4 text-light-text-secondary dark:text-dark-text-secondary">
-         Available Monday to Friday, 9:00 - 17:00 CET
-       </p>
-     </div>
-   </AnimatedSection>
- </div>
-</main>
-);
+          {/* Direct Contact Section - Updated styling */}
+          <div className="pt-8 border-t border-light-text-primary/10 dark:border-dark-text-primary/10">
+            <h2 className="text-3xl font-light text-light-text-primary dark:text-dark-text-heading mb-6">
+              Direct Contact
+            </h2>
+            <a 
+              href="mailto:contact@nordiccodeworks.com"
+              aria-label="Send Email"
+              className="group inline-flex items-center gap-3 text-lg text-light-text-secondary dark:text-dark-text-secondary 
+                hover:text-light-accent-blue dark:hover:text-dark-accent-yellow transition-all duration-300"
+            >
+              <Mail className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
+              contact@nordiccodeworks.com
+            </a>
+            <p className="mt-4 text-light-text-muted dark:text-dark-text-muted">
+              Available Monday to Friday, 9:00 - 17:00 CET
+            </p>
+          </div>
+        </AnimatedSection>
+      </div>
+    </main>
+  );
 };
 
 export default ContactPage;

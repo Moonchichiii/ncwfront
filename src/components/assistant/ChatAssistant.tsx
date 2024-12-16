@@ -1,11 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { X, MinusCircle } from 'lucide-react';
-import { gsap } from '@lib/gsap';
-import { Draggable } from 'gsap/Draggable';
+import React, { useState, useRef, useEffect } from 'react';
+import { X, MinusCircle, Send } from 'lucide-react';
+import { gsap } from 'gsap';
 import apiClient from '@api/config';
-import chatbotImage from '@/assets/images/chatbot.webp';
-
-gsap.registerPlugin(Draggable);
+import chatbotImage from '@assets/images/chatbot.webp';
 
 interface ChatAssistantProps {
     show: boolean;
@@ -24,59 +21,46 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
     const [isLoading, setIsLoading] = useState(false);
     const chatRef = useRef<HTMLDivElement>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
-    const draggableInstanceRef = useRef<Draggable | null>(null);
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
-    // Initialize and handle GSAP animations
-    const initializeGSAP = useCallback(() => {
-        if (!chatRef.current) return;
-
-        // Reset any existing GSAP animations
-        gsap.killTweensOf(chatRef.current);
+    // Enhanced hover animation
+    useEffect(() => {
+        if (!buttonRef.current) return;
         
-        // Set initial position and make visible
-        gsap.set(chatRef.current, {
-            x: window.innerWidth - 100,
-            y: window.innerHeight - 100,
-            opacity: 0,
-            display: 'block'
+        // Initial pulse animation
+        gsap.fromTo(
+            buttonRef.current,
+            { scale: 1 },
+            { 
+                scale: 1.05, 
+                duration: 1.2, 
+                repeat: -1, 
+                yoyo: true, 
+                ease: "elastic.out(1, 0.3)" 
+            }
+        );
+
+        // Hover effect
+        buttonRef.current.addEventListener('mouseenter', () => {
+            gsap.to(buttonRef.current, {
+                scale: 1.15,
+                duration: 0.3,
+                ease: "back.out(1.7)"
+            });
         });
 
-        // Animate visibility
-        if (show) {
-            gsap.to(chatRef.current, {
-                opacity: 1,
-                duration: 0.5,
-                ease: 'power2.inOut'
+        buttonRef.current.addEventListener('mouseleave', () => {
+            gsap.to(buttonRef.current, {
+                scale: 1,
+                duration: 0.3,
+                ease: "power2.out"
             });
-        }
-
-        // Initialize Draggable only once
-        if (!draggableInstanceRef.current) {
-            draggableInstanceRef.current = Draggable.create(chatRef.current, {
-                type: "x,y",
-                bounds: window,
-                inertia: true,
-                onClick: () => {
-                    if (!isOpen) setIsOpen(true);
-                }
-            })[0];
-        }
-    }, [show, isOpen]);
-
-    useEffect(() => {
-        initializeGSAP();
-        
-        return () => {
-            if (draggableInstanceRef.current) {
-                draggableInstanceRef.current.kill();
-                draggableInstanceRef.current = null;
-            }
-        };
-    }, [initializeGSAP]);
+        });
+    }, []);
 
     useEffect(() => {
         if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
         }
     }, [messages]);
 
@@ -90,20 +74,10 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
         setIsLoading(true);
 
         try {
-            const response = await apiClient.post('/chatbot/chat/', {
-                message: message.trim()
-            });
-
-            setMessages(prev => [...prev, {
-                type: 'bot',
-                content: response.data.message
-            }]);
+            const response = await apiClient.post('/chatbot/chat/', { message: message.trim() });
+            setMessages(prev => [...prev, { type: 'bot', content: response.data.message }]);
         } catch (err) {
-            console.error('Chat error:', err);
-            setMessages(prev => [...prev, {
-                type: 'bot',
-                content: 'Sorry, I encountered an error. Please try again.'
-            }]);
+            setMessages(prev => [...prev, { type: 'bot', content: 'Error, please try again.' }]);
         } finally {
             setIsLoading(false);
         }
@@ -112,104 +86,103 @@ const ChatAssistant: React.FC<ChatAssistantProps> = ({ show }) => {
     if (!show) return null;
 
     return (
-        <div
-            ref={chatRef}
-            className={`fixed z-[9999] ${isOpen ? 'w-80' : 'w-12'} transition-all duration-300`}
-            style={{ display: 'none' }}
+        <div 
+            ref={chatRef} 
+            className={`fixed sm:bottom-6 sm:right-6 bottom-4 right-4 z-[9999] transition-all duration-500 ease-in-out 
+                ${isOpen ? 'w-[90vw] sm:w-[400px] h-auto' : 'w-16 h-16'}`}
         >
             {!isOpen ? (
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="w-12 h-12 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue text-white flex items-center justify-center hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors overflow-hidden shadow-lg"
+                <button 
+                    ref={buttonRef}
+                    onClick={() => setIsOpen(true)} 
+                    className="w-16 h-16 rounded-full bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
+                        dark:from-dark-accent-blue dark:to-dark-accent-purple shadow-2xl flex items-center justify-center 
+                        transition-all hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] backdrop-blur-sm"
+                    aria-label="Open chat assistant"
                 >
-                    <img 
-                        src={chatbotImage}
-                        alt="Chat Assistant"
-                        className="w-180 h-180 object-contain"
-                    />
+                    <img src={chatbotImage} alt="" className="w-20 h-15 object-contain" />
                 </button>
             ) : (
-                <div className="bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-lg shadow-xl overflow-hidden">
-                    <div className="bg-light-accent-blue dark:bg-dark-accent-blue p-4 flex items-center justify-between cursor-move">
-                        <div className="flex items-center gap-2">
-                            <img 
-                                src={chatbotImage}
-                                alt="Chat Assistant"
-                                className="w-6 h-6 object-contain"
-                            />
-                            <h3 className="text-white font-light">Nordic Assistant</h3>
+                <div className="bg-light-bg-secondary/95 dark:bg-dark-bg-secondary/95 backdrop-blur-md rounded-3xl 
+                    shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden border border-light-text-primary/5 
+                    dark:border-dark-text-primary/5">
+                    {/* Header */}
+                    <div className="flex items-center justify-between p-4 bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
+                        dark:from-dark-accent-blue dark:to-dark-accent-purple">
+                        <div className="flex items-center gap-3">
+                            <img src={chatbotImage} alt="ChatAssitant image" className="w-10 h-8 object-contain" />
+                            <h3 className="text-white font-light text-lg">Nordic Assistant</h3>
                         </div>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => setIsMinimized(!isMinimized)}
-                                className="text-white hover:text-light-bg-secondary transition-colors"
-                            >
-                                <MinusCircle className="w-5 h-5" />
-                            </button>
-                            <button
-                                onClick={() => setIsOpen(false)}
-                                className="text-white hover:text-light-bg-secondary transition-colors"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+                        <button 
+                            onClick={() => setIsOpen(false)} 
+                            className="text-white/90 hover:text-white transition-colors p-1 rounded-full 
+                                hover:bg-white/10"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
                     </div>
 
-                    {!isMinimized && (
-                        <>
-                            <div className="h-96 overflow-y-auto p-4 space-y-4 bg-light-bg-primary dark:bg-dark-bg-primary">
-                                {messages.map((msg, index) => (
-                                    <div
-                                        key={index}
-                                        className={`flex ${
-                                            msg.type === 'user' ? 'justify-end' : 'justify-start'
-                                        }`}
-                                    >
-                                        <div
-                                            className={`max-w-[80%] p-3 rounded-lg ${
-                                                msg.type === 'user'
-                                                    ? 'bg-light-accent-blue dark:bg-dark-accent-blue text-white'
-                                                    : 'bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary'
-                                            }`}
-                                        >
-                                            {msg.content}
-                                        </div>
-                                    </div>
-                                ))}
-                                {isLoading && (
-                                    <div className="flex justify-start">
-                                        <div className="bg-light-bg-secondary dark:bg-dark-bg-secondary p-3 rounded-lg">
-                                            <div className="flex gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce" />
-                                                <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce delay-100" />
-                                                <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce delay-200" />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                <div ref={messagesEndRef} />
-                            </div>
-
-                            <form onSubmit={handleSubmit} className="p-4 border-t border-light-text-primary/10 dark:border-dark-text-primary/10">
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        value={message}
-                                        onChange={(e) => setMessage(e.target.value)}
-                                        placeholder="Type your message..."
-                                        className="flex-1 bg-light-bg-tertiary dark:bg-dark-bg-tertiary text-light-text-primary dark:text-dark-text-primary rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-light-accent-blue dark:focus:ring-dark-accent-blue"
-                                    />
-                                    <button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="bg-light-accent-blue dark:bg-dark-accent-blue text-white px-4 py-2 rounded-lg hover:bg-light-accent-purple dark:hover:bg-dark-accent-purple transition-colors disabled:opacity-50"
-                                    >
-                                        Send
-                                    </button>
+                    {/* Chat Body */}
+                    <div className="p-4 h-[50vh] sm:h-[400px] overflow-y-auto space-y-4 scrollbar-thin 
+                        scrollbar-thumb-light-accent-blue dark:scrollbar-thumb-dark-accent-blue scrollbar-track-transparent">
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`max-w-[80%] p-3 ${msg.type === 'user' 
+                                    ? 'bg-gradient-to-r from-light-accent-blue to-light-accent-purple dark:from-dark-accent-blue dark:to-dark-accent-purple text-white rounded-2xl rounded-br-sm' 
+                                    : 'bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 text-light-text-primary dark:text-dark-text-primary rounded-2xl rounded-bl-sm'}`}
+                                >
+                                    {msg.content}
                                 </div>
-                            </form>
-                        </>
-                    )}
+                            </div>
+                        ))}
+
+                        {isLoading && (
+                            <div className="flex justify-start">
+                                <div className="bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 p-3 rounded-2xl">
+                                    <div className="flex gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce" />
+                                        <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce delay-100" />
+                                        <div className="w-2 h-2 rounded-full bg-light-accent-blue dark:bg-dark-accent-blue animate-bounce delay-200" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <div ref={messagesEndRef} />
+                    </div>
+
+                    {/* Input Form */}
+                    <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-light-text-primary/5 dark:border-dark-text-primary/5">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                        <input 
+                            type="text" 
+                            value={message} 
+                            onChange={(e) => setMessage(e.target.value)} 
+                            className="flex-1 bg-light-bg-primary/50 dark:bg-dark-bg-primary/50 
+                                text-light-text-primary dark:text-dark-text-primary 
+                                text-sm sm:text-base
+                                rounded-full px-4 sm:px-6 py-2.5 sm:py-3
+                                focus:outline-none focus:ring-2 focus:ring-light-accent-blue dark:focus:ring-dark-accent-blue
+                                placeholder:text-light-text-muted dark:placeholder:text-dark-text-muted
+                                placeholder:text-sm sm:placeholder:text-base
+                                min-w-0 w-full"
+                            placeholder="Type your message..."
+                        />
+                        <button 
+                            type="submit" 
+                            disabled={isLoading}
+                            className="shrink-0 bg-gradient-to-r from-light-accent-blue to-light-accent-purple 
+                                dark:from-dark-accent-blue dark:to-dark-accent-purple text-white 
+                                p-2.5 sm:p-3
+                                rounded-full hover:shadow-lg transition-all duration-300 
+                                disabled:opacity-50 disabled:cursor-not-allowed
+                                hover:scale-105 active:scale-95
+                                flex items-center justify-center"
+                            aria-label="Send message"
+                        >
+                            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+                        </button>
+                    </div>
+                </form>
                 </div>
             )}
         </div>

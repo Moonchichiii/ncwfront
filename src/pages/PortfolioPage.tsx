@@ -52,6 +52,7 @@ const PortfolioPage: FC = () => {
               <button
                 key={category.label}
                 onClick={() => setSelectedCategory(category.id)}
+                aria-label={`Filter by ${category.label}`}
                 className={`px-6 py-2 rounded-full transition-colors ${
                   selectedCategory === category.id
                     ? 'bg-light-bg-secondary dark:bg-dark-bg-secondary text-light-text-primary dark:text-dark-text-primary'

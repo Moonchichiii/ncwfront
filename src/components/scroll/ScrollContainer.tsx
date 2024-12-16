@@ -20,6 +20,7 @@ const ScrollContainer: React.FC = () => {
   const [showUI, setShowUI] = useState(true);
   const [showFooter, setShowFooter] = useState(false);
   const [showChatAssistant, setShowChatAssistant] = useState(false);
+  let debounceTimeout: NodeJS.Timeout | null = null;
 
   // Handle scroll indicator animations separately
   useEffect(() => {
@@ -46,15 +47,14 @@ const ScrollContainer: React.FC = () => {
     return () => ctx.revert();
   }, [currentSection]);
 
-// In ScrollContainer
-useEffect(() => {
+  useEffect(() => {
     if (!containerRef.current) return;
-  
+
     const sections = sectionsRef.current;
     const scrollTriggers: gsap.ScrollTrigger[] = [];
     let lastScrollTime = 0;
     const scrollThreshold = 150;
-  
+
     const ctx = gsap.context(() => {
       sections.forEach((section, index) => {
         const trigger = ScrollTrigger.create({
@@ -66,37 +66,49 @@ useEffect(() => {
             if (now - lastScrollTime > scrollThreshold) {
               setCurrentSection(index);
               lastScrollTime = now;
-              
+
+              // Set UI visibility logic
               setShowUI(index !== 0);
               setShowFooter(index === sections.length - 1);
-              // Show chat assistant after a slight delay when entering About page
-              if (index === 1) {
-                setTimeout(() => setShowChatAssistant(true), 500);
-              } else {
-                setShowChatAssistant(false);
-              }
+
+              // Set ChatAssistant visibility (debounced to avoid rapid state changes)
+              if (debounceTimeout) clearTimeout(debounceTimeout);
+              debounceTimeout = setTimeout(() => {
+                setShowChatAssistant(index !== 0);
+              }, 100); // Wait for 100ms before toggling
             }
           },
           onEnterBack: () => {
-            // Similar logic for scrolling back
             const now = Date.now();
             if (now - lastScrollTime > scrollThreshold) {
               setCurrentSection(index);
               lastScrollTime = now;
-  
+
+              // Set UI visibility logic
               setShowUI(index !== 0);
               setShowFooter(index === sections.length - 1);
-              setShowChatAssistant(index !== 0);
+
+              // Set ChatAssistant visibility (debounced to avoid rapid state changes)
+              if (debounceTimeout) clearTimeout(debounceTimeout);
+              debounceTimeout = setTimeout(() => {
+                setShowChatAssistant(index !== 0);
+              }, 100); // Wait for 100ms before toggling
             }
           },
         });
         scrollTriggers.push(trigger);
       });
-    });
-  
+
+      ScrollTrigger.config({
+        limitCallbacks: true,
+        syncInterval: 50,
+      });
+    }, containerRef);
+
     return () => {
       scrollTriggers.forEach(trigger => trigger.kill());
       ctx.revert();
+      if (debounceTimeout) clearTimeout(debounceTimeout); // Clear debounce on cleanup
     };
   }, []);
 

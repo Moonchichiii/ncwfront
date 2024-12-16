@@ -18,9 +18,7 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
+      if (e.key === 'Escape') onClose();
     };
 
     if (isOpen) {
@@ -30,9 +28,7 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
       hideModal();
     }
 
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
+    return () => document.removeEventListener('keydown', handleEscape);
   }, [isOpen, onClose]);
 
   const showModal = () => {
@@ -41,50 +37,31 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
 
     const tl = gsap.timeline({
       defaults: { ease: 'power4.out' },
-      onComplete: () => {
-        isAnimatingRef.current = false;
-      }
+      onComplete: () => { isAnimatingRef.current = false; }
     });
 
-    // Reset initial states with null checks
-    if (modalRef.current) {
-      gsap.set(modalRef.current, { opacity: 0, scale: 0.95, y: 20 });
-    }
-    if (backdropRef.current) {
-      gsap.set(backdropRef.current, { opacity: 0 });
-    }
-    if (headerRef.current) {
-      gsap.set(headerRef.current, { opacity: 0, y: -20 });
-    }
-    if (contentRef.current?.children) {
-      gsap.set(contentRef.current.children, { opacity: 0, y: 30 });
-    }
+    if (modalRef.current && backdropRef.current && headerRef.current && contentRef.current?.children) {
+      gsap.set([modalRef.current, backdropRef.current, headerRef.current, contentRef.current.children], { 
+        opacity: 0,
+        y: 20 
+      });
 
-    // Animate in sequence with null checks
-    if (backdropRef.current) {
       tl.to(backdropRef.current, {
         opacity: 1,
         duration: 0.4,
-      });
-    }
-    if (modalRef.current) {
-      tl.to(modalRef.current, {
+      })
+      .to(modalRef.current, {
         opacity: 1,
-        scale: 1,
         y: 0,
         duration: 0.5,
         ease: 'back.out(1.7)',
-      }, '-=0.2');
-    }
-    if (headerRef.current) {
-      tl.to(headerRef.current, {
+      }, '-=0.2')
+      .to(headerRef.current, {
         opacity: 1,
         y: 0,
         duration: 0.4,
-      }, '-=0.3');
-    }
-    if (contentRef.current?.children) {
-      tl.to(contentRef.current.children, {
+      }, '-=0.3')
+      .to(contentRef.current.children, {
         opacity: 1,
         y: 0,
         duration: 0.4,
@@ -99,36 +76,27 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.inOut' },
-      onComplete: () => {
-        isAnimatingRef.current = false;
-      }
+      onComplete: () => { isAnimatingRef.current = false; }
     });
 
-    if (contentRef.current?.children) {
+    if (modalRef.current && backdropRef.current && headerRef.current && contentRef.current?.children) {
       tl.to(contentRef.current.children, {
         opacity: 0,
         y: -20,
         duration: 0.3,
         stagger: 0.02,
-      });
-    }
-    if (headerRef.current) {
-      tl.to(headerRef.current, {
+      })
+      .to(headerRef.current, {
         opacity: 0,
         y: -20,
         duration: 0.3,
-      }, '-=0.2');
-    }
-    if (modalRef.current) {
-      tl.to(modalRef.current, {
+      }, '-=0.2')
+      .to(modalRef.current, {
         opacity: 0,
-        scale: 0.95,
         y: 20,
         duration: 0.3,
-      }, '-=0.2');
-    }
-    if (backdropRef.current) {
-      tl.to(backdropRef.current, {
+      }, '-=0.2')
+      .to(backdropRef.current, {
         opacity: 0,
         duration: 0.3,
       }, '-=0.1');
@@ -139,28 +107,28 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
     return content.split('\n').map((line: string, index: number) => {
       if (line.startsWith('# ')) {
         return (
-          <h2 key={index} className="text-2xl font-bold mt-8 mb-4 text-gray-50">
+          <h2 key={index} className="text-2xl font-light mt-8 mb-4 text-light-text-primary dark:text-dark-text-heading">
             {line.replace('# ', '').trim()}
           </h2>
         );
       }
       if (line.startsWith('## ')) {
         return (
-          <h3 key={index} className="text-xl font-semibold mt-6 mb-3 text-gray-50">
+          <h3 key={index} className="text-xl font-light mt-6 mb-3 text-light-text-primary dark:text-dark-text-heading">
             {line.replace('## ', '').trim()}
           </h3>
         );
       }
       if (line.startsWith('### ')) {
         return (
-          <h4 key={index} className="text-lg font-semibold mt-4 mb-2 text-gray-50">
+          <h4 key={index} className="text-lg font-light mt-4 mb-2 text-light-text-primary dark:text-dark-text-heading">
             {line.replace('### ', '').trim()}
           </h4>
         );
       }
       if (line.startsWith('- ') || line.startsWith('* ')) {
         return (
-          <li key={index} className="ml-6 my-1 text-gray-300">
+          <li key={index} className="ml-6 my-1 text-light-text-secondary dark:text-dark-text-secondary">
             {line.replace(/^[-*] /, '').trim()}
           </li>
         );
@@ -169,7 +137,7 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
         return <div key={index} className="h-4" />;
       }
       return (
-        <p key={index} className="my-2 text-gray-300 leading-relaxed">
+        <p key={index} className="my-2 text-light-text-secondary dark:text-dark-text-secondary leading-relaxed">
           {line}
         </p>
       );
@@ -183,27 +151,30 @@ const PolicyModal = ({ isOpen, onClose, title, content }: PolicyModalProps) => {
       <div
         ref={backdropRef}
         onClick={onClose}
-        className="fixed inset-0 bg-black/50 backdrop-blur z-40"
+        className="fixed inset-0 bg-light-bg-primary/80 dark:bg-dark-bg-primary/80 backdrop-blur-sm z-40"
       />
       <div
         ref={modalRef}
-        className="fixed inset-4 sm:inset-auto sm:top-[10%] sm:left-1/2 sm:-translate-x-1/2 sm:max-w-3xl w-full max-h-[80vh] bg-gray-900 rounded-xl shadow-xl z-50 flex flex-col"
+        className="fixed inset-4 sm:inset-auto sm:top-[10%] sm:left-1/2 sm:-translate-x-1/2 sm:max-w-3xl w-full 
+          max-h-[80vh] bg-light-bg-secondary dark:bg-dark-bg-secondary rounded-2xl shadow-xl z-50 flex flex-col"
       >
         <div 
           ref={headerRef}
-          className="flex items-center justify-between px-6 py-4 border-b border-gray-800"
+          className="flex items-center justify-between px-6 py-4 border-b border-light-text-primary/10 dark:border-dark-text-primary/10"
         >
-          <h2 className="text-xl font-bold text-gray-50">{title}</h2>
+          <h2 className="text-xl font-light text-light-text-primary dark:text-dark-text-heading">{title}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-800 rounded-full transition-colors"
+            className="p-2 hover:bg-light-bg-tertiary dark:hover:bg-dark-bg-tertiary rounded-full transition-colors"
             aria-label="Close"
           >
-            <X size={20} className="text-gray-300" />
+            <X className="w-5 h-5 text-light-text-secondary dark:text-dark-text-secondary" />
           </button>
         </div>
         <div className="flex-1 overflow-y-auto px-6 py-4">
-          <div ref={contentRef} className="max-w-none">{formattedContent}</div>
+          <div ref={contentRef} className="max-w-none prose dark:prose-invert">
+            {formattedContent}
+          </div>
         </div>
       </div>
     </>

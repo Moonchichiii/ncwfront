@@ -2,12 +2,88 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
+    
+    <!-- Primary Meta Tags -->
+    <title>Nordic Code Works | Affordable Full-Stack Web Applications</title>
+    <meta name="title" content="Nordic Code Works | Affordable Full-Stack Web Applications" />
+    <meta name="description" content="Build affordable, professional, and modern full-stack web applications with Nordic Code Works. Tailored to suit your business needs and budget." />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nordiccodeworks.com/" />
+    <meta property="og:title" content="Nordic Code Works | Affordable Full-Stack Web Applications" />
+    <meta property="og:description" content="Build affordable, professional, and modern full-stack web applications with Nordic Code Works. Tailored to suit your business needs and budget." />
+    <meta property="og:image" content="https://nordiccodeworks.com/assets/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://nordiccodeworks.com/" />
+    <meta property="twitter:title" content="Nordic Code Works | Affordable Full-Stack Web Applications" />
+    <meta property="twitter:description" content="Build affordable, professional, and modern full-stack web applications with Nordic Code Works. Tailored to suit your business needs and budget." />
+    <meta property="twitter:image" content="https://nordiccodeworks.com/assets/og-image.png" />
+
+    <!-- Favicon Links -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/assets/favicon/site.webmanifest.json" />
+
+    <!-- Robots Meta Tag -->
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Nordic Code Works",
+        "url": "https://nordiccodeworks.com",
+        "logo": "https://nordiccodeworks.com/assets/og-image.png",
+        "description": "Build affordable, professional, and modern full-stack web applications with Nordic Code Works.",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+1-234-567-890",
+          "contactType": "Customer Service",
+          "areaServed": "Worldwide",
+          "availableLanguage": ["English", "Swedish"]
+        }
+      }
+    </script>
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#ffffff" />
+
+    <!-- Accessibility Enhancements -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" />
+
+    <!-- Prevent FOUC -->
+    <style>
+      body {
+        visibility: hidden;
+      }
+    </style>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.body.style.visibility = 'visible';
+      });
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <header role="banner" aria-label="Main Navigation">
+      <h1 style="display: none;">Nordic Code Works | Full-Stack Web Solutions</h1>
+    </header>
+
+    <main role="main">
+      <div id="root"></div>
+    </main>
+
+    <footer role="contentinfo">
+      <p>&copy; 2024 Nordic Code Works. All rights reserved.</p>
+    </footer>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
